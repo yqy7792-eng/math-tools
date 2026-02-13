@@ -1,0 +1,3175 @@
+<html lang="en" id="html-root"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">MathMaster - Interactive Math Learning Tool</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#4f46e5',
+                        accent: '#10b981',
+                        neutral: '#6b7280',
+                        'light-bg': '#f8fafc',
+                        'dark-bg': '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Consolas', 'Monaco', 'monospace']
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'button': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                        'button-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .btn-primary {
+                @apply bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-all duration-200 shadow-button hover:shadow-button-hover focus:outline-none focus:ring-2 focus:ring-primary/50;
+            }
+            .btn-secondary {
+                @apply bg-secondary text-white px-4 py-2 rounded-md hover:bg-secondary/90 transition-all duration-200 shadow-button hover:shadow-button-hover focus:outline-none focus:ring-2 focus:ring-secondary/50;
+            }
+            .btn-accent {
+                @apply bg-accent text-white px-4 py-2 rounded-md hover:bg-accent/90 transition-all duration-200 shadow-button hover:shadow-button-hover focus:outline-none focus:ring-2 focus:ring-accent/50;
+            }
+            .language-select {
+                @apply appearance-none bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-md leading-tight focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary cursor-pointer;
+            }
+            .btn-outline {
+                @apply border border-primary text-primary px-4 py-2 rounded-md hover:bg-primary/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50;
+            }
+            .input-field {
+                @apply border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary;
+            }
+            .card {
+                @apply bg-white rounded-lg shadow-card p-6 transition-all duration-300 hover:shadow-lg;
+            }
+            .nav-link {
+                @apply px-4 py-2 rounded-md transition-all duration-200;
+            }
+            .nav-link-active {
+                @apply bg-primary text-white;
+            }
+            .nav-link-inactive {
+                @apply text-gray-600 hover:bg-gray-100;
+            }
+            .section {
+                @apply hidden;
+            }
+            .section-active {
+                @apply block;
+            }
+            .calculator-btn {
+                @apply bg-gray-100 text-gray-800 rounded-md w-12 h-12 flex items-center justify-center text-xl font-medium hover:bg-gray-200 transition-all duration-200;
+            }
+            .calculator-btn-operator {
+                @apply bg-primary text-white hover:bg-primary/90;
+            }
+            .calculator-btn-function {
+                @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+            }
+            .calculator-btn-equals {
+                @apply bg-accent text-white hover:bg-accent/90;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light-bg min-h-screen">
+    <!-- Header Navigation -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fa fa-calculator text-primary text-3xl mr-3"></i>
+                    <h1 class="text-2xl font-bold text-gray-800" data-lang="title">MathMaster</h1>
+                </div>
+                <div class="flex items-center mb-4 md:mb-0">
+                    <button id="language-toggle" class="btn-outline flex items-center">
+                        <i class="fa fa-globe mr-2"></i>
+                        <span id="current-language">English</span>
+                    </button>
+                </div>
+                <nav class="flex flex-wrap justify-center gap-2">
+                    <button class="nav-link nav-link-active" data-section="home">
+                        <i class="fa fa-home mr-1"></i> <span data-lang="navHome">Home</span>
+                    </button>
+                    <button class="nav-link nav-link-inactive" data-section="practice">
+                        <i class="fa fa-pencil-square-o mr-1"></i> <span data-lang="navPractice">Practice</span>
+                    </button>
+                    <button class="nav-link nav-link-inactive" data-section="calculator">
+                        <i class="fa fa-calculator mr-1"></i> <span data-lang="navCalculator">Calculator</span>
+                    </button>
+                    <button class="nav-link nav-link-inactive" data-section="converter">
+                        <i class="fa fa-exchange mr-1"></i> <span data-lang="navConverters">Converters</span>
+                    </button>
+                    <button class="nav-link nav-link-inactive" data-section="tools">
+                        <i class="fa fa-wrench mr-1"></i> <span data-lang="navTools">Tools</span>
+                    </button>
+                    <button class="nav-link nav-link-inactive" data-section="about">
+                        <i class="fa fa-user mr-1"></i> <span data-lang="navAbout">About Author</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- About Author Section -->
+        <section id="about" class="section">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6" data-lang="aboutTitle">About the Author</h2>
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <div class="flex flex-col md:flex-row items-center mb-8">
+                        <div class="w-32 h-32 bg-gray-200 rounded-full mb-4 md:mb-0 md:mr-6 flex items-center justify-center">
+                            <i class="fa fa-user-circle text-6xl text-gray-600"></i>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <h3 class="text-2xl font-semibold text-gray-800" data-lang="aboutName">Yqy Studio</h3>
+                            <p class="text-gray-600 mt-2" data-lang="aboutPosition">数学教育者 &amp; 开发者</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-4" data-lang="aboutBio">Biography</h4>
+                        <p class="text-gray-700 leading-relaxed" data-lang="aboutBioContent">我是一名10岁的学生，来自中国，我数学很不错。我喜欢编程和创造有用的工具来帮助其他同学学习数学。虽然我年纪还小，但我已经学习编程半年了，希望将来能成为一名优秀的软件工程师。</p>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-4" data-lang="aboutExpertise">Areas of Expertise</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-3"></i>
+                                <span data-lang="aboutExpertise1">Mathematics Education</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-3"></i>
+                                <span data-lang="aboutExpertise2">Educational Technology</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-3"></i>
+                                <span data-lang="aboutExpertise3">Interactive Learning</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa fa-check-circle text-primary mr-3"></i>
+                                <span data-lang="aboutExpertise4">Curriculum Development</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-semibold text-gray-800 mb-4" data-lang="aboutContact">Contact Information</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <i class="fa fa-envelope text-gray-600 mr-3 w-5 text-center"></i>
+                                <span data-lang="aboutEmail">yqy7792@icloud.com</span>
+                            </div>
+                            <div class="flex items-center">
+                                <canvas id="microsoftIcon" width="20" height="20" class="mr-3"></canvas>
+                                <span data-lang="aboutMicrosoftEmail">yqy7792@hotmail.com</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa fa-github text-gray-600 mr-3 w-5 text-center"></i>
+                                <span data-lang="aboutGithub">Github/Yqy Studio</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Home Section -->
+        <section id="home" class="section section-active">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4" data-lang="homeWelcome">Welcome to MathMaster</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-lang="homeDescription">您的综合数学学习平台，提供交互式工具帮助您掌握数学。</p>
+                <p class="text-lg text-gray-500 mt-4" data-lang="homeStudioInfo"></p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Practice Card -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-primary/10 p-3 rounded-full mr-4">
+                            <i class="fa fa-pencil-square-o text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="homePracticeTitle">Math Practice</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="homePracticeDescription">
+                        Practice arithmetic, algebra, geometry, and more with interactive exercises and instant feedback.
+                    </p>
+                    <button class="btn-primary w-full" data-nav="practice">
+                        <span data-lang="homePracticeButton">Start Practicing</span>
+                    </button>
+                </div>
+
+                <!-- Calculator Card -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-secondary/10 p-3 rounded-full mr-4">
+                            <i class="fa fa-calculator text-secondary text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="homeCalculatorTitle">Calculator</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="homeCalculatorDescription">
+                        Perform basic and advanced calculations with our easy-to-use calculator.
+                    </p>
+                    <button class="btn-secondary w-full" data-nav="calculator">
+                        <span data-lang="homeCalculatorButton">Open Calculator</span>
+                    </button>
+                </div>
+
+                <!-- Converters Card -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-accent/10 p-3 rounded-full mr-4">
+                            <i class="fa fa-exchange text-accent text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="homeConvertersTitle">Converters</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="homeConvertersDescription">
+                        Convert between different number bases and units with our powerful conversion tools.
+                    </p>
+                    <button class="btn-accent w-full" data-nav="converter">
+                        <span data-lang="homeConvertersButton">Try Converters</span>
+                    </button>
+                </div>
+
+                <!-- Advanced Tools Card -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-wrench text-purple-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="homeToolsTitle">Advanced Tools</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="homeToolsDescription">
+                        Access specialized mathematical tools for factorization, differentiation, integration, and more.
+                    </p>
+                    <button class="btn-outline border-purple-600 text-purple-600 hover:bg-purple-50 w-full" data-nav="tools">
+                        <span data-lang="homeToolsButton">Explore Tools</span>
+                    </button>
+                </div>
+
+                <!-- Learning Resources Card -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-amber-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-book text-amber-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="homeResourcesTitle">Learning Resources</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="homeResourcesDescription">
+                        Find helpful guides and tutorials to improve your understanding of mathematical concepts.
+                    </p>
+                    <button id="show-guide" class="btn-outline border-amber-600 text-amber-600 hover:bg-amber-50 w-full">
+                        <span data-lang="homeResourcesButton">View Guide</span>
+                    </button>
+                </div>
+
+                <!-- Progress Tracking Card -->
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-rose-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-line-chart text-rose-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="homeProgressTitle">Progress Tracking</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="homeProgressDescription">
+                        Monitor your learning progress and track improvements over time.
+                    </p>
+                    <button id="show-progress" class="btn-outline border-rose-600 text-rose-600 hover:bg-rose-50 w-full">
+                        <span data-lang="homeProgressButton">View Progress</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- How to Use Section -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6" data-lang="homeHowToTitle">How to Use MathMaster</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4" data-lang="homeGettingStarted">Getting Started</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <div class="bg-primary/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-check text-primary"></i>
+                                </div>
+                                <span data-lang="homeGettingStarted1">Select a tool from the navigation menu or homepage cards</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-primary/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-check text-primary"></i>
+                                </div>
+                                <span data-lang="homeGettingStarted2">Follow the on-screen instructions for each tool</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-primary/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-check text-primary"></i>
+                                </div>
+                                <span data-lang="homeGettingStarted3">Use the "Home" button to return to the main page anytime</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4" data-lang="homeTipsTitle">Tips for Success</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <div class="bg-accent/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-lightbulb-o text-accent"></i>
+                                </div>
+                                <span data-lang="homeTips1">Practice regularly to improve your math skills</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-accent/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-lightbulb-o text-accent"></i>
+                                </div>
+                                <span data-lang="homeTips2">Use the calculator for complex calculations</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-accent/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-lightbulb-o text-accent"></i>
+                                </div>
+                                <span data-lang="homeTips3">Try different number bases in the converter to understand their relationships</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section id="practice" class="section">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2" data-lang="practiceTitle">Math Practice</h2>
+                <p class="text-gray-600" data-lang="practiceDescription">Improve your math skills with interactive exercises</p>
+            </div>
+
+            <!-- Practice Instructions -->
+            <div id="practice-instructions" class="bg-white rounded-lg shadow-card p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4" data-lang="readyToPractice">Ready to Practice?</h3>
+                        <p class="text-gray-600 mb-6" data-lang="selectPracticeType">Select a practice type and difficulty level, then click "Start Practice" to begin.</p>
+                        
+                        <div class="mb-4">
+                            <label for="practice-type" class="block text-sm font-medium text-gray-700 mb-1" data-lang="practiceType">Practice Type:</label>
+                            <select id="practice-type" class="input-field w-full">
+                                <option value="arithmetic" data-lang="arithmetic">Arithmetic</option>
+                                <option value="algebra" data-lang="algebra">Algebra</option>
+                                <option value="geometry" data-lang="geometry">Geometry</option>
+                                <option value="trigonometry" data-lang="trigonometry">Trigonometry</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="practice-level" class="block text-sm font-medium text-gray-700 mb-1" data-lang="practiceLevel">Difficulty Level:</label>
+                            <select id="practice-level" class="input-field w-full">
+                                <option value="easy" data-lang="easy">Easy</option>
+                                <option value="medium" data-lang="medium">Medium</option>
+                                <option value="hard" data-lang="hard">Hard</option>
+                            </select>
+                        </div>
+                        
+                        <button id="start-practice" class="btn-primary w-full">
+                            <span data-lang="startPractice">Start Practice</span>
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4" data-lang="howItWorks">How It Works:</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <div class="bg-primary/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-check text-primary"></i>
+                                </div>
+                                <span data-lang="get10Questions">You'll get 10 questions based on your selected topic</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-primary/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-check text-primary"></i>
+                                </div>
+                                <span data-lang="getImmediateFeedback">Answer each question and get immediate feedback</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-primary/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-check text-primary"></i>
+                                </div>
+                                <span data-lang="trackProgress">Track your progress with real-time scoring</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-primary/10 p-2 rounded-full mr-3 mt-1">
+                                    <i class="fa fa-check text-primary"></i>
+                                </div>
+                                <span data-lang="seeFinalResults">See your final results and accuracy at the end</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Container -->
+            <div id="practice-container" class="bg-white rounded-lg shadow-card p-6 mb-8 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center">
+                        <span class="text-lg font-medium" data-lang="question">Question</span>
+                        <span id="question-number" class="ml-2 text-lg font-bold">1</span>
+                        <span class="ml-1 text-lg">/ 10</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-lg font-medium" data-lang="score">Score:</span>
+                        <span id="current-score" class="ml-2 text-lg font-bold">0</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <div id="question-display" class="text-2xl font-medium text-gray-800 mb-6">
+                        <!-- Question will be displayed here -->
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="answer-input" class="block text-sm font-medium text-gray-700 mb-1" data-lang="yourAnswer">Your answer:</label>
+                        <input type="text" id="answer-input" class="input-field w-full" placeholder="Enter your answer">
+                    </div>
+                    
+                    <button id="check-answer" class="btn-primary w-full">
+                        <span data-lang="checkAnswer">Check Answer</span>
+                    </button>
+                </div>
+                
+                <div id="feedback-container" class="hidden">
+                    <div id="correct-feedback" class="bg-green-100 text-green-800 p-4 rounded-lg mb-4 hidden">
+                        <div class="flex items-center">
+                            <i class="fa fa-check-circle text-green-600 text-xl mr-2"></i>
+                            <span data-lang="correct">Correct! Well done.</span>
+                        </div>
+                    </div>
+                    
+                    <div id="incorrect-feedback" class="bg-red-100 text-red-800 p-4 rounded-lg mb-4 hidden">
+                        <div class="flex items-center">
+                            <i class="fa fa-times-circle text-red-600 text-xl mr-2"></i>
+                            <span data-lang="incorrect">Incorrect. The correct answer is</span>
+                            <span id="correct-answer" class="font-bold ml-1"></span>
+                        </div>
+                    </div>
+                    
+                    <button id="next-question" class="btn-secondary w-full">
+                        <span data-lang="nextQuestion">Next Question</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Practice Results -->
+            <div id="practice-stats" class="bg-white rounded-lg shadow-card p-6 mb-8 hidden">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2" data-lang="practiceComplete">Practice Complete!</h3>
+                    <p class="text-gray-600">Your performance summary:</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gray-50 p-4 rounded-lg text-center">
+                        <div class="text-lg font-medium text-gray-600 mb-1" data-lang="totalQuestions">Total Questions</div>
+                        <div class="text-3xl font-bold text-gray-800">10</div>
+                    </div>
+                    
+                    <div class="bg-green-50 p-4 rounded-lg text-center">
+                        <div class="text-lg font-medium text-gray-600 mb-1" data-lang="correctAnswers">Correct Answers</div>
+                        <div id="correct-count" class="text-3xl font-bold text-green-600">0</div>
+                    </div>
+                    
+                    <div class="bg-blue-50 p-4 rounded-lg text-center">
+                        <div class="text-lg font-medium text-gray-600 mb-1" data-lang="accuracy">Accuracy</div>
+                        <div id="accuracy-percentage" class="text-3xl font-bold text-blue-600">0%</div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button id="restart-practice" class="btn-primary flex-1">
+                        <span data-lang="tryAgain">Try Again</span>
+                    </button>
+                    <button id="change-settings" class="btn-outline flex-1">
+                        <span data-lang="changeSettings">Change Settings</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator Section -->
+        <section id="calculator" class="section">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2" data-lang="calculatorTitle">Calculator</h2>
+                <p class="text-gray-600" data-lang="calculatorDescription">Perform basic and advanced calculations</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Calculator -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-lg shadow-card p-6">
+                        <div class="mb-6">
+                            <div id="calculator-expression" class="text-right text-gray-500 mb-2 min-h-6 font-mono"></div>
+                            <div id="calculator-display" class="text-right text-4xl font-bold text-gray-800 min-h-12 font-mono">0</div>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-3 mb-6">
+                            <button class="calculator-btn calculator-btn-function" data-calc="clear">C</button>
+                            <button class="calculator-btn calculator-btn-function" data-calc="clear-entry">CE</button>
+                            <button class="calculator-btn calculator-btn-function" data-calc="backspace">⌫</button>
+                            <button class="calculator-btn calculator-btn-operator" data-calc="/">÷</button>
+
+                            <button class="calculator-btn" data-calc="7">7</button>
+                            <button class="calculator-btn" data-calc="8">8</button>
+                            <button class="calculator-btn" data-calc="9">9</button>
+                            <button class="calculator-btn calculator-btn-operator" data-calc="*">×</button>
+
+                            <button class="calculator-btn" data-calc="4">4</button>
+                            <button class="calculator-btn" data-calc="5">5</button>
+                            <button class="calculator-btn" data-calc="6">6</button>
+                            <button class="calculator-btn calculator-btn-operator" data-calc="-">-</button>
+
+                            <button class="calculator-btn" data-calc="1">1</button>
+                            <button class="calculator-btn" data-calc="2">2</button>
+                            <button class="calculator-btn" data-calc="3">3</button>
+                            <button class="calculator-btn calculator-btn-operator" data-calc="+">+</button>
+
+                            <button class="calculator-btn" data-calc="0">0</button>
+                            <button class="calculator-btn" data-calc=".">.</button>
+                            <button class="calculator-btn" data-calc="pi">π</button>
+                            <button class="calculator-btn calculator-btn-equals" data-calc="=">=</button>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-3" data-lang="advancedFunctions">
+                            <button class="calculator-btn calculator-btn-function" data-calc="sqrt">√</button>
+                            <button class="calculator-btn calculator-btn-function" data-calc="power">x²</button>
+                            <button class="calculator-btn calculator-btn-function" data-calc="1/x">1/x</button>
+                            <button class="calculator-btn calculator-btn-function" data-calc="mod">%</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculation History -->
+                <div>
+                    <div class="bg-white rounded-lg shadow-card p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800" data-lang="history">History</h3>
+                            <button id="clear-history" class="text-sm text-gray-500 hover:text-gray-700">
+                                <span data-lang="clearHistory">Clear History</span>
+                            </button>
+                        </div>
+
+                        <div id="calculation-history" class="space-y-2 max-h-80 overflow-y-auto">
+                            <div class="text-gray-500 text-center py-4" data-lang="noCalculations">No calculations yet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Converter Section -->
+        <section id="converter" class="section">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2" data-lang="convertersTitle">Converters</h2>
+                <p class="text-gray-600" data-lang="convertersDescription">Convert between different number bases and units</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Base Converter -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-primary/10 p-3 rounded-full mr-4">
+                            <i class="fa fa-code text-primary text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="baseConverter">Base Converter</h3>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="base-input" class="block text-sm font-medium text-gray-700 mb-1" data-lang="enterNumber">Enter a number:</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="base-input" class="input-field flex-1" placeholder="Enter number">
+                            <select id="input-base" class="input-field">
+                                <option value="2" data-lang="binary">Binary (base 2)</option>
+                                <option value="8" data-lang="octal">Octal (base 8)</option>
+                                <option value="10" data-lang="decimal" selected="">Decimal (base 10)</option>
+                                <option value="16" data-lang="hexadecimal">Hexadecimal (base 16)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-lang="binary">Binary (base 2):</label>
+                            <input type="text" id="binary-output" class="input-field w-full" readonly="">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-lang="octal">Octal (base 8):</label>
+                            <input type="text" id="octal-output" class="input-field w-full" readonly="">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-lang="decimal">Decimal (base 10):</label>
+                            <input type="text" id="decimal-output" class="input-field w-full" readonly="">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" data-lang="hexadecimal">Hexadecimal (base 16):</label>
+                            <input type="text" id="hexadecimal-output" class="input-field w-full" readonly="">
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-4">
+                        <button id="clear-base" class="btn-outline flex-1">
+                            <span data-lang="clear">Clear</span>
+                        </button>
+                        <button id="swap-bases" class="btn-primary flex-1">
+                            <i class="fa fa-exchange mr-1"></i> <span data-lang="swapInputBase">Swap Input Base</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit Converter -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-secondary/10 p-3 rounded-full mr-4">
+                            <i class="fa fa-balance-scale text-secondary text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="unitConverter">Unit Converter</h3>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="unit-type" class="block text-sm font-medium text-gray-700 mb-1" data-lang="conversionType">Conversion Type:</label>
+                        <select id="unit-type" class="input-field w-full">
+                            <option value="length" data-lang="length">Length</option>
+                            <option value="weight" data-lang="weight">Weight</option>
+                            <option value="temperature" data-lang="temperature">Temperature</option>
+                            <option value="area" data-lang="area">Area</option>
+                            <option value="volume" data-lang="volume">Volume</option>
+                            <option value="time" data-lang="time">Time</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="unit-from-value" class="block text-sm font-medium text-gray-700 mb-1" data-lang="from">From:</label>
+                            <input type="number" id="unit-from-value" class="input-field w-full mb-2" placeholder="Enter value" step="any">
+                            <select id="unit-from" class="input-field w-full">
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        <div>
+                            <label for="unit-to-value" class="block text-sm font-medium text-gray-700 mb-1" data-lang="to">To:</label>
+                            <input type="text" id="unit-to-value" class="input-field w-full mb-2" readonly="">
+                            <select id="unit-to" class="input-field w-full">
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-4">
+                        <button id="clear-unit" class="btn-outline flex-1">
+                            <span data-lang="clear">Clear</span>
+                        </button>
+                        <button id="swap-units" class="btn-secondary flex-1">
+                            <i class="fa fa-exchange mr-1"></i> <span data-lang="swapUnits">Swap Units</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools Section -->
+        <section id="tools" class="section">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2" data-lang="toolsTitle">Advanced Math Tools</h2>
+                <p class="text-gray-600" data-lang="toolsDescription">Specialized tools for complex mathematical operations</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Factorization Tool -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-sitemap text-purple-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="factorization">Factorization</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="findPrimeFactors">Find the prime factors of a number</p>
+                    
+                    <div class="mb-4">
+                        <label for="factor-input" class="block text-sm font-medium text-gray-700 mb-1" data-lang="enterANumber">Enter a number:</label>
+                        <input type="number" id="factor-input" class="input-field w-full" placeholder="e.g., 1260">
+                    </div>
+                    
+                    <button id="calculate-factors" class="btn-outline border-purple-600 text-purple-600 hover:bg-purple-50 w-full mb-4">
+                        <span data-lang="calculateFactors">Calculate Factors</span>
+                    </button>
+                    
+                    <div id="factor-result" class="hidden">
+                        <div class="text-sm font-medium text-gray-700 mb-2" data-lang="primeFactors">Prime Factors:</div>
+                        <div class="bg-gray-50 p-3 rounded-lg font-mono" id="factor-output"></div>
+                    </div>
+                </div>
+
+                <!-- Derivative Tool -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-line-chart text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="derivative">Derivative</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="calculateDerivative">Calculate the derivative of a function</p>
+                    
+                    <div class="mb-4">
+                        <label for="derivative-input" class="block text-sm font-medium text-gray-700 mb-1" data-lang="enterFunction">Enter a function (in terms of x):</label>
+                        <input type="text" id="derivative-input" class="input-field w-full" placeholder="e.g., x^2 + 3*x - 5">
+                    </div>
+                    
+                    <button id="calculate-derivative" class="btn-outline border-blue-600 text-blue-600 hover:bg-blue-50 w-full mb-4">
+                        <span data-lang="calculateDerivativeButton">Calculate Derivative</span>
+                    </button>
+                    
+                    <div id="derivative-result" class="hidden">
+                        <div class="text-sm font-medium text-gray-700 mb-2" data-lang="derivativeResult">Derivative:</div>
+                        <div class="bg-gray-50 p-3 rounded-lg font-mono" id="derivative-output"></div>
+                    </div>
+                </div>
+
+                <!-- Matrix Calculator -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-table text-green-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="matrixOperations">Matrix Operations</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="performMatrixOperations">Perform operations with matrices</p>
+                    
+                    <div class="mb-4">
+                        <label for="matrix-operation" class="block text-sm font-medium text-gray-700 mb-1" data-lang="operation">Operation:</label>
+                        <select id="matrix-operation" class="input-field w-full">
+                            <option value="determinant" data-lang="determinant">Determinant</option>
+                            <option value="transpose" data-lang="transpose">Transpose</option>
+                            <option value="inverse" data-lang="inverse">Inverse</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1" data-lang="matrix">Matrix:</label>
+                        <div id="matrix-input" class="grid grid-cols-2 gap-2">
+                            <input type="number" class="input-field matrix-cell" placeholder="1" step="any">
+                            <input type="number" class="input-field matrix-cell" placeholder="0" step="any">
+                            <input type="number" class="input-field matrix-cell" placeholder="0" step="any">
+                            <input type="number" class="input-field matrix-cell" placeholder="1" step="any">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 mb-4">
+                        <button id="matrix-size-2" class="btn-outline border-gray-300 text-gray-700 hover:bg-gray-50 flex-1">2x2</button>
+                        <button id="matrix-size-3" class="btn-outline border-gray-300 text-gray-700 hover:bg-gray-50 flex-1">3x3</button>
+                    </div>
+                    
+                    <button id="calculate-matrix" class="btn-outline border-green-600 text-green-600 hover:bg-green-50 w-full mb-4">
+                        <span data-lang="calculate">Calculate</span>
+                    </button>
+                    
+                    <div id="matrix-result" class="hidden">
+                        <div class="text-sm font-medium text-gray-700 mb-2" data-lang="result">Result:</div>
+                        <div class="bg-gray-50 p-3 rounded-lg font-mono" id="matrix-output"></div>
+                    </div>
+                </div>
+
+                <!-- Integral Calculator -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-area-chart text-purple-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="integral">Integral</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="calculateIntegral">Calculate the indefinite integral of a function</p>
+                    
+                    <div class="mb-4">
+                        <label for="integral-input" class="block text-sm font-medium text-gray-700 mb-1" data-lang="enterFunction">Enter a function (in terms of x):</label>
+                        <input type="text" id="integral-input" class="input-field w-full" placeholder="e.g., x^2 + 3*x - 5">
+                    </div>
+                    
+                    <button id="calculate-integral" class="btn-outline border-purple-600 text-purple-600 hover:bg-purple-50 w-full mb-4">
+                        <span data-lang="calculateIntegralButton">Calculate Integral</span>
+                    </button>
+                    
+                    <div id="integral-result" class="hidden">
+                        <div class="text-sm font-medium text-gray-700 mb-2" data-lang="integralResult">Integral:</div>
+                        <div class="bg-gray-50 p-3 rounded-lg font-mono" id="integral-output"></div>
+                    </div>
+                </div>
+
+                <!-- Quadratic Solver -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-amber-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-square-root-o text-amber-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="quadraticSolver">Quadratic Solver</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="solveQuadraticEquations">Solve quadratic equations (ax² + bx + c = 0)</p>
+                    
+                    <div class="grid grid-cols-3 gap-2 mb-4">
+                        <div>
+                            <label for="quad-a" class="block text-sm font-medium text-gray-700 mb-1">a:</label>
+                            <input type="number" id="quad-a" class="input-field w-full" placeholder="1" step="any">
+                        </div>
+                        <div>
+                            <label for="quad-b" class="block text-sm font-medium text-gray-700 mb-1">b:</label>
+                            <input type="number" id="quad-b" class="input-field w-full" placeholder="0" step="any">
+                        </div>
+                        <div>
+                            <label for="quad-c" class="block text-sm font-medium text-gray-700 mb-1">c:</label>
+                            <input type="number" id="quad-c" class="input-field w-full" placeholder="0" step="any">
+                        </div>
+                    </div>
+                    
+                    <button id="solve-quadratic" class="btn-outline border-amber-600 text-amber-600 hover:bg-amber-50 w-full mb-4">
+                        <span data-lang="solveEquation">Solve Equation</span>
+                    </button>
+                    
+                    <div id="quadratic-result" class="hidden">
+                        <div class="text-sm font-medium text-gray-700 mb-2" data-lang="solutions">Solutions:</div>
+                        <div class="bg-gray-50 p-3 rounded-lg font-mono" id="quadratic-output"></div>
+                    </div>
+                </div>
+
+                <!-- GCD and LCM -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-rose-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-link text-rose-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="gcdLcm">GCD &amp; LCM</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="calculateGcdLcm">Calculate GCD and LCM of two numbers</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="gcd-lcm-a" class="block text-sm font-medium text-gray-700 mb-1" data-lang="firstNumber">First number:</label>
+                            <input type="number" id="gcd-lcm-a" class="input-field w-full" placeholder="e.g., 24">
+                        </div>
+                        <div>
+                            <label for="gcd-lcm-b" class="block text-sm font-medium text-gray-700 mb-1" data-lang="secondNumber">Second number:</label>
+                            <input type="number" id="gcd-lcm-b" class="input-field w-full" placeholder="e.g., 36">
+                        </div>
+                    </div>
+                    
+                    <button id="calculate-gcd-lcm" class="btn-outline border-rose-600 text-rose-600 hover:bg-rose-50 w-full mb-4">
+                        <span data-lang="calculate">Calculate</span>
+                    </button>
+                    
+                    <div id="gcd-lcm-result" class="hidden">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-sm font-medium text-gray-700 mb-2">GCD:</div>
+                                <div class="bg-gray-50 p-3 rounded-lg font-mono" id="gcd-output"></div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-700 mb-2">LCM:</div>
+                                <div class="bg-gray-50 p-3 rounded-lg font-mono" id="lcm-output"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Calculator -->
+                <div class="bg-white rounded-lg shadow-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                            <i class="fa fa-bar-chart text-indigo-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" data-lang="statistics">Statistics</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4" data-lang="calculateStatistics">Calculate basic statistics for a set of numbers</p>
+                    
+                    <div class="mb-4">
+                        <label for="stats-input" class="block text-sm font-medium text-gray-700 mb-1" data-lang="enterNumbers">Enter numbers (comma-separated):</label>
+                        <input type="text" id="stats-input" class="input-field w-full" placeholder="e.g., 1, 2, 3, 4, 5">
+                    </div>
+                    
+                    <button id="calculate-stats" class="btn-outline border-indigo-600 text-indigo-600 hover:bg-indigo-50 w-full mb-4">
+                        <span data-lang="calculateStatisticsButton">Calculate Statistics</span>
+                    </button>
+                    
+                    <div id="stats-result" class="hidden">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <div class="text-sm font-medium text-gray-700 mb-1" data-lang="mean">Mean:</div>
+                                <div class="bg-gray-50 p-2 rounded-lg font-mono" id="mean-output"></div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-700 mb-1" data-lang="median">Median:</div>
+                                <div class="bg-gray-50 p-2 rounded-lg font-mono" id="median-output"></div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-700 mb-1" data-lang="mode">Mode:</div>
+                                <div class="bg-gray-50 p-2 rounded-lg font-mono" id="mode-output"></div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-700 mb-1" data-lang="standardDeviation">Standard Deviation:</div>
+                                <div class="bg-gray-50 p-2 rounded-lg font-mono" id="std-dev-output"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fa fa-calculator text-primary text-2xl mr-2"></i>
+                        <h3 class="text-xl font-bold" data-lang="title">MathMaster</h3>
+                    </div>
+                    <p class="text-gray-400" data-lang="homeDescription">
+                        A comprehensive math learning platform with interactive tools to help you master mathematics.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4" data-lang="quickLinks">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-nav="home"><span data-lang="navHome">Home</span></a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-nav="practice"><span data-lang="navPractice">Math Practice</span></a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-nav="calculator"><span data-lang="navCalculator">Calculator</span></a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-nav="converter"><span data-lang="navConverters">Converters</span></a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" data-nav="tools"><span data-lang="navTools">Advanced Tools</span></a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4" data-lang="resources">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" id="footer-guide"><span data-lang="learningGuide">Learning Guide</span></a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors" id="footer-progress"><span data-lang="progressTracking">Your Progress</span></a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors"><span data-lang="mathGlossary">Math Glossary</span></a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors"><span data-lang="faq">FAQ</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>© 2025 MathMaster. <span data-lang="allRightsReserved">All rights reserved.</span></p>
+                <p class="mt-2 text-sm" data-lang="madeBy">由Yqy Studio单人团队制作</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Language Support
+        const translations = {
+            en: {
+                title: "MathMaster",
+                pageTitle: "MathMaster - Interactive Math Learning Tool",
+                currentLanguage: "English",
+                navHome: "Home",
+                navPractice: "Practice",
+                navCalculator: "Calculator",
+                navConverters: "Converters",
+                navTools: "Tools",
+                navAbout: "About Author",
+                homeWelcome: "Welcome to MathMaster",
+                homeDescription: "Your comprehensive math learning platform with interactive tools to help you master mathematics.",
+                homeStudioInfo: "We are Yqy Studio, welcome to use our platform.",
+                aboutTitle: "About the Author",
+                aboutName: "Yqy Studio",
+                aboutPosition: "Mathematics Educator & Developer",
+                aboutBio: "Biography",
+                aboutBioContent: "I am a 10-year-old student from China. I am very good at mathematics and I enjoy programming and creating useful tools to help other students learn math. Although I am young, I have been learning programming for six months and hope to become an excellent software engineer in the future.",
+                aboutExpertise: "Areas of Expertise",
+                aboutExpertise1: "Mathematics Education",
+                aboutExpertise2: "Educational Technology",
+                aboutExpertise3: "Interactive Learning",
+                aboutExpertise4: "Curriculum Development",
+                aboutContact: "Contact Information",
+                aboutEmail: "yqy7792@icloud.com",
+                aboutMicrosoftEmail: "yqy7792@hotmail.com",
+                aboutGithub: "",
+                homePracticeTitle: "Math Practice",
+                homePracticeDescription: "Practice arithmetic, algebra, geometry, and more with interactive exercises and instant feedback.",
+                homePracticeButton: "Start Practicing",
+                homeCalculatorTitle: "Calculator",
+                homeCalculatorDescription: "Perform basic and advanced calculations with our easy-to-use calculator.",
+                homeCalculatorButton: "Open Calculator",
+                homeConvertersTitle: "Converters",
+                homeConvertersDescription: "Convert between different number bases and units with our powerful conversion tools.",
+                homeConvertersButton: "Try Converters",
+                homeToolsTitle: "Advanced Tools",
+                homeToolsDescription: "Access specialized mathematical tools for factorization, differentiation, integration, and more.",
+                homeToolsButton: "Explore Tools",
+                homeResourcesTitle: "Learning Resources",
+                homeResourcesDescription: "Find helpful guides and tutorials to improve your understanding of mathematical concepts.",
+                homeResourcesButton: "View Guide",
+                homeProgressTitle: "Progress Tracking",
+                homeProgressDescription: "Monitor your learning progress and track improvements over time.",
+                homeProgressButton: "View Progress",
+                homeHowToTitle: "How to Use MathMaster",
+                homeGettingStarted: "Getting Started",
+                homeGettingStarted1: "Select a tool from the navigation menu or homepage cards",
+                homeGettingStarted2: "Follow the on-screen instructions for each tool",
+                homeGettingStarted3: "Use the \"Home\" button to return to the main page anytime",
+                homeTipsTitle: "Tips for Success",
+                homeTips1: "Practice regularly to improve your math skills",
+                homeTips2: "Use the calculator for complex calculations",
+                homeTips3: "Try different number bases in the converter to understand their relationships",
+                practiceTitle: "Math Practice",
+                practiceDescription: "Improve your math skills with interactive exercises",
+                practiceType: "Practice Type",
+                practiceLevel: "Difficulty Level",
+                startPractice: "Start Practice",
+                question: "Question",
+                score: "Score",
+                yourAnswer: "Your answer",
+                checkAnswer: "Check Answer",
+                correct: "Correct! Well done.",
+                incorrect: "Incorrect. The correct answer is",
+                nextQuestion: "Next Question",
+                practiceComplete: "Practice Complete!",
+                totalQuestions: "Total Questions",
+                correctAnswers: "Correct Answers",
+                accuracy: "Accuracy",
+                tryAgain: "Try Again",
+                changeSettings: "Change Settings",
+                readyToPractice: "Ready to Practice?",
+                selectPracticeType: "Select a practice type and difficulty level, then click \"Start Practice\" to begin.",
+                howItWorks: "How It Works:",
+                get10Questions: "You'll get 10 questions based on your selected topic",
+                getImmediateFeedback: "Answer each question and get immediate feedback",
+                trackProgress: "Track your progress with real-time scoring",
+                seeFinalResults: "See your final results and accuracy at the end",
+                calculatorTitle: "Calculator",
+                calculatorDescription: "Perform basic and advanced calculations",
+                advancedFunctions: "Advanced Functions",
+                history: "History",
+                noCalculations: "No calculations yet",
+                clearHistory: "Clear History",
+                convertersTitle: "Converters",
+                convertersDescription: "Convert between different number bases and units",
+                baseConverter: "Base Converter",
+                enterNumber: "Enter a number:",
+                invalidInput: "Invalid input for the selected base",
+                binary: "Binary (base 2)",
+                octal: "Octal (base 8)",
+                decimal: "Decimal (base 10)",
+                hexadecimal: "Hexadecimal (base 16)",
+                clear: "Clear",
+                swapInputBase: "Swap Input Base",
+                unitConverter: "Unit Converter",
+                conversionType: "Conversion Type:",
+                from: "From:",
+                to: "To:",
+                swapUnits: "Swap Units",
+                toolsTitle: "Advanced Math Tools",
+                toolsDescription: "Specialized tools for complex mathematical operations",
+                factorization: "Factorization",
+                findPrimeFactors: "Find the prime factors of a number",
+                enterANumber: "Enter a number:",
+                calculateFactors: "Calculate Factors",
+                primeFactors: "Prime Factors:",
+                derivative: "Derivative",
+                calculateDerivative: "Calculate the derivative of a function",
+                enterFunction: "Enter a function (in terms of x):",
+                calculateDerivativeButton: "Calculate Derivative",
+                derivativeResult: "Derivative:",
+                matrixOperations: "Matrix Operations",
+                performMatrixOperations: "Perform operations with matrices",
+                operation: "Operation:",
+                determinant: "Determinant",
+                transpose: "Transpose",
+                inverse: "Inverse",
+                matrix: "Matrix:",
+                calculate: "Calculate",
+                result: "Result:",
+                integral: "Integral",
+                calculateIntegral: "Calculate the indefinite integral of a function",
+                calculateIntegralButton: "Calculate Integral",
+                integralResult: "Integral:",
+                quadraticSolver: "Quadratic Solver",
+                solveQuadraticEquations: "Solve quadratic equations (ax² + bx + c = 0)",
+                solveEquation: "Solve Equation",
+                solutions: "Solutions:",
+                gcdLcm: "GCD & LCM",
+                calculateGcdLcm: "Calculate GCD and LCM of two numbers",
+                firstNumber: "First number:",
+                secondNumber: "Second number:",
+                statistics: "Statistics",
+                calculateStatistics: "Calculate basic statistics for a set of numbers",
+                enterNumbers: "Enter numbers (comma-separated):",
+                calculateStatisticsButton: "Calculate Statistics",
+                mean: "Mean:",
+                median: "Median:",
+                mode: "Mode:",
+                standardDeviation: "Standard Deviation:",
+                learningGuide: "Learning Guide",
+                learningGuideMessage: "Learning Guide will be available soon!",
+                progressTracking: "Progress Tracking",
+                progressTrackingMessage: "Progress tracking feature will be available soon!",
+                allRightsReserved: "All rights reserved.",
+                quickLinks: "Quick Links",
+                resources: "Resources",
+                mathGlossary: "Math Glossary",
+                faq: "FAQ",
+                length: "Length",
+                weight: "Weight",
+                temperature: "Temperature",
+                area: "Area",
+                volume: "Volume",
+                time: "Time",
+                determinant: "Determinant",
+                transpose: "Transpose",
+                inverse: "Inverse",
+                arithmetic: "Arithmetic",
+                algebra: "Algebra",
+                geometry: "Geometry",
+                trigonometry: "Trigonometry",
+                easy: "Easy",
+                medium: "Medium",
+                hard: "Hard",
+                madeBy: "Made by Yqy Studio (Solo Team)"
+            },
+            zh: {
+                title: "数学大师",
+                pageTitle: "数学大师 - 交互式数学学习工具",
+                currentLanguage: "中文",
+                navHome: "首页",
+                navPractice: "练习",
+                navCalculator: "计算器",
+                navConverters: "转换器",
+                navTools: "工具",
+                navAbout: "作者简历",
+                homeWelcome: "欢迎使用数学大师",
+                homeDescription: "您的综合数学学习平台，提供交互式工具帮助您掌握数学。",
+                homeStudioInfo: "我们是Yqy Studio,欢迎大家使用",
+                aboutTitle: "关于作者",
+                aboutName: "Yqy Studio",
+                aboutPosition: "数学教育者 & 开发者",
+                aboutBio: "个人简介",
+                aboutBioContent: "我是一名10岁的学生，来自中国，我数学很不错。我喜欢编程和创造有用的工具来帮助其他同学学习数学。虽然我年纪还小，但我已经学习编程半年了，希望将来能成为一名优秀的软件工程师。",
+                aboutExpertise: "专业领域",
+                aboutExpertise1: "数学教育",
+                aboutExpertise2: "教育技术",
+                aboutExpertise3: "互动学习",
+                aboutExpertise4: "课程开发",
+                aboutContact: "联系信息",
+                aboutEmail: "yqy7792@icloud.com",
+                aboutMicrosoftEmail: "yqy7792@hotmail.com",
+                aboutGithub: "",
+                homePracticeTitle: "数学练习",
+                homePracticeDescription: "通过交互式练习和即时反馈，练习算术、代数、几何等内容。",
+                homePracticeButton: "开始练习",
+                homeCalculatorTitle: "计算器",
+                homeCalculatorDescription: "使用我们易用的计算器执行基本和高级计算。",
+                homeCalculatorButton: "打开计算器",
+                homeConvertersTitle: "转换器",
+                homeConvertersDescription: "使用我们强大的转换工具在不同的数字基数和单位之间进行转换。",
+                homeConvertersButton: "尝试转换器",
+                homeToolsTitle: "高级工具",
+                homeToolsDescription: "访问专门的数学工具，如因式分解、微分、积分等。",
+                homeToolsButton: "探索工具",
+                homeResourcesTitle: "学习资源",
+                homeResourcesDescription: "查找有用的指南和教程，提高您对数学概念的理解。",
+                homeResourcesButton: "查看指南",
+                homeProgressTitle: "进度跟踪",
+                homeProgressDescription: "监控您的学习进度并跟踪随时间的改进。",
+                homeProgressButton: "查看进度",
+                homeHowToTitle: "如何使用数学大师",
+                homeGettingStarted: "入门指南",
+                homeGettingStarted1: "从导航菜单或主页卡片中选择工具",
+                homeGettingStarted2: "按照每个工具的屏幕说明操作",
+                homeGettingStarted3: "随时使用\"首页\"按钮返回主页",
+                homeTipsTitle: "成功技巧",
+                homeTips1: "定期练习以提高您的数学技能",
+                homeTips2: "使用计算器进行复杂计算",
+                homeTips3: "在转换器中尝试不同的数字基数以理解它们之间的关系",
+                practiceTitle: "数学练习",
+                practiceDescription: "通过交互式练习提高您的数学技能",
+                practiceType: "练习类型",
+                practiceLevel: "难度级别",
+                startPractice: "开始练习",
+                question: "问题",
+                score: "得分",
+                yourAnswer: "您的答案",
+                checkAnswer: "检查答案",
+                correct: "正确！做得好。",
+                incorrect: "不正确。正确答案是",
+                nextQuestion: "下一题",
+                practiceComplete: "练习完成！",
+                totalQuestions: "总题数",
+                correctAnswers: "正确答案",
+                accuracy: "准确率",
+                tryAgain: "再试一次",
+                changeSettings: "更改设置",
+                readyToPractice: "准备好练习了吗？",
+                selectPracticeType: "选择练习类型和难度级别，然后点击\"开始练习\"开始。",
+                howItWorks: "工作原理：",
+                get10Questions: "您将根据所选主题获得10个问题",
+                getImmediateFeedback: "回答每个问题并获得即时反馈",
+                trackProgress: "通过实时评分跟踪您的进度",
+                seeFinalResults: "最后查看您的最终结果和准确率",
+                calculatorTitle: "计算器",
+                calculatorDescription: "执行基本和高级计算",
+                advancedFunctions: "高级函数",
+                history: "历史记录",
+                noCalculations: "暂无计算记录",
+                clearHistory: "清除历史记录",
+                convertersTitle: "转换器",
+                convertersDescription: "在不同的数字基数和单位之间转换",
+                baseConverter: "基数转换器",
+                enterNumber: "输入一个数字：",
+                invalidInput: "所选基数的输入无效",
+                binary: "二进制 (基数 2)",
+                octal: "八进制 (基数 8)",
+                decimal: "十进制 (基数 10)",
+                hexadecimal: "十六进制 (基数 16)",
+                clear: "清除",
+                swapInputBase: "交换输入基数",
+                unitConverter: "单位转换器",
+                conversionType: "转换类型：",
+                from: "从：",
+                to: "到：",
+                swapUnits: "交换单位",
+                toolsTitle: "高级数学工具",
+                toolsDescription: "用于复杂数学运算的专业工具",
+                factorization: "因式分解",
+                findPrimeFactors: "查找数字的素因数",
+                enterANumber: "输入一个数字：",
+                calculateFactors: "计算因数",
+                primeFactors: "素因数：",
+                derivative: "导数",
+                calculateDerivative: "计算函数的导数",
+                enterFunction: "输入一个函数（关于x）：",
+                calculateDerivativeButton: "计算导数",
+                derivativeResult: "导数：",
+                matrixOperations: "矩阵运算",
+                performMatrixOperations: "执行矩阵运算",
+                operation: "运算：",
+                determinant: "行列式",
+                transpose: "转置",
+                inverse: "逆矩阵",
+                matrix: "矩阵：",
+                calculate: "计算",
+                result: "结果：",
+                integral: "积分",
+                calculateIntegral: "计算函数的不定积分",
+                calculateIntegralButton: "计算积分",
+                integralResult: "积分结果:",
+                quadraticSolver: "二次方程求解器",
+                solveQuadraticEquations: "求解二次方程 (ax² + bx + c = 0)",
+                solveEquation: "解方程",
+                solutions: "解：",
+                gcdLcm: "最大公约数和最小公倍数",
+                calculateGcdLcm: "计算两个数的最大公约数和最小公倍数",
+                firstNumber: "第一个数：",
+                secondNumber: "第二个数：",
+                statistics: "统计",
+                calculateStatistics: "计算一组数字的基本统计数据",
+                enterNumbers: "输入数字（用逗号分隔）：",
+                calculateStatisticsButton: "计算统计数据",
+                mean: "平均值：",
+                median: "中位数：",
+                mode: "众数：",
+                standardDeviation: "标准差：",
+                learningGuide: "学习指南",
+                learningGuideMessage: "学习指南即将推出！",
+                progressTracking: "进度跟踪",
+                progressTrackingMessage: "进度跟踪功能即将推出！",
+                allRightsReserved: "保留所有权利。",
+                quickLinks: "快速链接",
+                resources: "资源",
+                mathGlossary: "数学词汇表",
+                faq: "常见问题",
+                length: "长度",
+                weight: "重量",
+                temperature: "温度",
+                area: "面积",
+                volume: "体积",
+                time: "时间",
+                determinant: "行列式",
+                transpose: "转置",
+                inverse: "逆矩阵",
+                arithmetic: "算术",
+                algebra: "代数",
+                geometry: "几何",
+                trigonometry: "三角学",
+                easy: "简单",
+                medium: "中等",
+                hard: "困难",
+                madeBy: "由Yqy Studio单人团队制作"
+            },
+            es: {
+                title: "MathMaster",
+                pageTitle: "MathMaster - Herramienta Interactiva de Aprendizaje Matemático",
+                currentLanguage: "Español",
+                navHome: "Inicio",
+                navPractice: "Práctica",
+                navCalculator: "Calculadora",
+                navConverters: "Convertidores",
+                navTools: "Herramientas",
+                homeWelcome: "Bienvenido a MathMaster",
+                homeDescription: "Tu plataforma integral de aprendizaje matemático con herramientas interactivas para ayudarte a dominar las matemáticas.",
+                homePracticeTitle: "Práctica Matemática",
+                homePracticeDescription: "Practica aritmética, álgebra, geometría y más con ejercicios interactivos y retroalimentación instantánea.",
+                homePracticeButton: "Empezar a Practicar",
+                homeCalculatorTitle: "Calculadora",
+                homeCalculatorDescription: "Realiza cálculos básicos y avanzados con nuestra calculadora fácil de usar.",
+                homeCalculatorButton: "Abrir Calculadora",
+                homeConvertersTitle: "Convertidores",
+                homeConvertersDescription: "Convierte entre diferentes bases numéricas y unidades con nuestras potentes herramientas de conversión.",
+                homeConvertersButton: "Probar Convertidores",
+                homeToolsTitle: "Herramientas Avanzadas",
+                homeToolsDescription: "Accede a herramientas matemáticas especializadas para factorización, diferenciación, integración y más.",
+                homeToolsButton: "Explorar Herramientas",
+                homeResourcesTitle: "Recursos de Aprendizaje",
+                homeResourcesDescription: "Encuentra guías y tutoriales útiles para mejorar tu comprensión de los conceptos matemáticos.",
+                homeResourcesButton: "Ver Guía",
+                homeProgressTitle: "Seguimiento de Progreso",
+                homeProgressDescription: "Monitorea tu progreso de aprendizaje y rastrea mejoras con el tiempo.",
+                homeProgressButton: "Ver Progreso",
+                homeHowToTitle: "Cómo Usar MathMaster",
+                homeGettingStarted: "Primeros Pasos",
+                homeGettingStarted1: "Selecciona una herramienta del menú de navegación o de las tarjetas de la página principal",
+                homeGettingStarted2: "Sigue las instrucciones en pantalla para cada herramienta",
+                homeGettingStarted3: "Usa el botón \"Inicio\" para regresar a la página principal en cualquier momento",
+                homeTipsTitle: "Consejos para el Éxito",
+                homeTips1: "Practica regularmente para mejorar tus habilidades matemáticas",
+                homeTips2: "Usa la calculadora para cálculos complejos",
+                homeTips3: "Prueba diferentes bases numéricas en el convertidor para comprender sus relaciones",
+                practiceTitle: "Práctica Matemática",
+                practiceDescription: "Mejora tus habilidades matemáticas con ejercicios interactivos",
+                practiceType: "Tipo de Práctica",
+                practiceLevel: "Nivel de Dificultad",
+                startPractice: "Iniciar Práctica",
+                question: "Pregunta",
+                score: "Puntuación",
+                yourAnswer: "Tu respuesta",
+                checkAnswer: "Verificar Respuesta",
+                correct: "¡Correcto! Muy bien.",
+                incorrect: "Incorrecto. La respuesta correcta es",
+                nextQuestion: "Siguiente Pregunta",
+                practiceComplete: "¡Práctica Completa!",
+                totalQuestions: "Total de Preguntas",
+                correctAnswers: "Respuestas Correctas",
+                accuracy: "Precisión",
+                tryAgain: "Intentar Nuevamente",
+                changeSettings: "Cambiar Configuración",
+                readyToPractice: "¿Listo para Practicar?",
+                selectPracticeType: "Selecciona un tipo de práctica y nivel de dificultad, luego haz clic en \"Iniciar Práctica\" para comenzar.",
+                howItWorks: "¿Cómo Funciona?:",
+                get10Questions: "Obtendrás 10 preguntas basadas en el tema seleccionado",
+                getImmediateFeedback: "Responde cada pregunta y obtén retroalimentación instantánea",
+                trackProgress: "Rastrea tu progreso con puntuación en tiempo real",
+                seeFinalResults: "Ve tus resultados finales y precisión al final",
+                calculatorTitle: "Calculadora",
+                calculatorDescription: "Realiza cálculos básicos y avanzados",
+                advancedFunctions: "Funciones Avanzadas",
+                history: "Historial",
+                noCalculations: "No hay cálculos todavía",
+                clearHistory: "Limpiar Historial",
+                convertersTitle: "Convertidores",
+                convertersDescription: "Convierte entre diferentes bases numéricas y unidades",
+                baseConverter: "Convertidor de Bases",
+                enterNumber: "Introduce un número:",
+                invalidInput: "Entrada inválida para la base seleccionada",
+                binary: "Binario (base 2)",
+                octal: "Octal (base 8)",
+                decimal: "Decimal (base 10)",
+                hexadecimal: "Hexadecimal (base 16)",
+                clear: "Limpiar",
+                swapInputBase: "Intercambiar Base de Entrada",
+                unitConverter: "Convertidor de Unidades",
+                conversionType: "Tipo de Conversión:",
+                from: "De:",
+                to: "A:",
+                swapUnits: "Intercambiar Unidades",
+                toolsTitle: "Herramientas Matemáticas Avanzadas",
+                toolsDescription: "Herramientas especializadas para operaciones matemáticas complejas",
+                factorization: "Factorización",
+                findPrimeFactors: "Encuentra los factores primos de un número",
+                enterANumber: "Introduce un número:",
+                calculateFactors: "Calcular Factores",
+                primeFactors: "Factores Primos:",
+                derivative: "Derivada",
+                calculateDerivative: "Calcula la derivada de una función",
+                enterFunction: "Introduce una función (en términos de x):",
+                calculateDerivativeButton: "Calcular Derivada",
+                derivativeResult: "Derivada:",
+                matrixOperations: "Operaciones Matriciales",
+                performMatrixOperations: "Realiza operaciones con matrices",
+                operation: "Operación:",
+                determinant: "Determinante",
+                transpose: "Transpuesta",
+                inverse: "Inversa",
+                matrix: "Matriz:",
+                calculate: "Calcular",
+                result: "Resultado:",
+                quadraticSolver: "Resolvedor de Ecuaciones Cuadráticas",
+                solveQuadraticEquations: "Resuelve ecuaciones cuadráticas (ax² + bx + c = 0)",
+                solveEquation: "Resolver Ecuación",
+                solutions: "Soluciones:",
+                gcdLcm: "MCD y mcm",
+                calculateGcdLcm: "Calcula el MCD y mcm de dos números",
+                firstNumber: "Primer número:",
+                secondNumber: "Segundo número:",
+                statistics: "Estadísticas",
+                calculateStatistics: "Calcula estadísticas básicas para un conjunto de números",
+                enterNumbers: "Introduce números (separados por comas):",
+                calculateStatisticsButton: "Calcular Estadísticas",
+                mean: "Media:",
+                median: "Mediana:",
+                mode: "Moda:",
+                standardDeviation: "Desviación Estándar:",
+                learningGuide: "Guía de Aprendizaje",
+                learningGuideMessage: "¡La Guía de Aprendizaje estará disponible pronto!",
+                progressTracking: "Seguimiento de Progreso",
+                progressTrackingMessage: "¡La función de seguimiento de progreso estará disponible pronto!",
+                allRightsReserved: "Todos los derechos reservados.",
+                quickLinks: "Enlaces Rápidos",
+                resources: "Recursos",
+                mathGlossary: "Glosario Matemático",
+                faq: "Preguntas Frecuentes",
+                length: "Longitud",
+                weight: "Peso",
+                temperature: "Temperatura",
+                area: "Área",
+                volume: "Volumen",
+                time: "Tiempo",
+                determinant: "Determinante",
+                transpose: "Transpuesta",
+                inverse: "Inversa",
+                arithmetic: "Aritmética",
+                algebra: "Álgebra",
+                geometry: "Geometría",
+                trigonometry: "Trigonometría",
+                easy: "Fácil",
+                medium: "Medio",
+                hard: "Difícil",
+                madeBy: "Hecho por Yqy Studio (Equipo Individual)"
+            },
+            fr: {
+                title: "MathMaster",
+                pageTitle: "MathMaster - Outil Interactif d'Apprentissage Mathématique",
+                currentLanguage: "Français",
+                navHome: "Accueil",
+                navPractice: "Pratique",
+                navCalculator: "Calculatrice",
+                navConverters: "Convertisseurs",
+                navTools: "Outils",
+                homeWelcome: "Bienvenue sur MathMaster",
+                homeDescription: "Votre plateforme complète d'apprentissage des mathématiques avec des outils interactifs pour vous aider à maîtriser les mathématiques.",
+                homePracticeTitle: "Pratique Mathématique",
+                homePracticeDescription: "Pratiquez l'arithmétique, l'algèbre, la géométrie et plus encore avec des exercices interactifs et des commentaires instantanés.",
+                homePracticeButton: "Commencer à Pratiquer",
+                homeCalculatorTitle: "Calculatrice",
+                homeCalculatorDescription: "Effectuez des calculs de base et avancés avec notre calculatrice facile à utiliser.",
+                homeCalculatorButton: "Ouvrir la Calculatrice",
+                homeConvertersTitle: "Convertisseurs",
+                homeConvertersDescription: "Convertissez entre différentes bases numériques et unités avec nos puissants outils de conversion.",
+                homeConvertersButton: "Essayer les Convertisseurs",
+                homeToolsTitle: "Outils Avancés",
+                homeToolsDescription: "Accédez à des outils mathématiques spécialisés pour la factorisation, la différenciation, l'intégration et plus.",
+                homeToolsButton: "Explorer les Outils",
+                homeResourcesTitle: "Ressources d'Apprentissage",
+                homeResourcesDescription: "Trouvez des guides et des tutoriels utiles pour améliorer votre compréhension des concepts mathématiques.",
+                homeResourcesButton: "Voir le Guide",
+                homeProgressTitle: "Suivi de la Progression",
+                homeProgressDescription: "Surveillez votre progression d'apprentissage et suivez vos améliorations au fil du temps.",
+                homeProgressButton: "Voir la Progression",
+                homeHowToTitle: "Comment Utiliser MathMaster",
+                homeGettingStarted: "Premiers Pas",
+                homeGettingStarted1: "Sélectionnez un outil dans le menu de navigation ou dans les cartes de la page d'accueil",
+                homeGettingStarted2: "Suivez les instructions à l'écran pour chaque outil",
+                homeGettingStarted3: "Utilisez le bouton \"Accueil\" pour retourner à la page principale à tout moment",
+                homeTipsTitle: "Conseils pour la Réussite",
+                homeTips1: "Pratiquez régulièrement pour améliorer vos compétences en mathématiques",
+                homeTips2: "Utilisez la calculatrice pour les calculs complexes",
+                homeTips3: "Essayez différentes bases numériques dans le convertisseur pour comprendre leurs relations",
+                practiceTitle: "Pratique Mathématique",
+                practiceDescription: "Améliorez vos compétences en mathématiques avec des exercices interactifs",
+                practiceType: "Type de Pratique",
+                practiceLevel: "Niveau de Difficulté",
+                startPractice: "Démarrer la Pratique",
+                question: "Question",
+                score: "Score",
+                yourAnswer: "Votre réponse",
+                checkAnswer: "Vérifier la Réponse",
+                correct: "Correct ! Bien fait.",
+                incorrect: "Incorrect. La bonne réponse est",
+                nextQuestion: "Question Suivante",
+                practiceComplete: "Pratique Terminée !",
+                totalQuestions: "Nombre Total de Questions",
+                correctAnswers: "Réponses Correctes",
+                accuracy: "Précision",
+                tryAgain: "Essayer à Nouveau",
+                changeSettings: "Modifier les Paramètres",
+                readyToPractice: "Prêt à pratiquer ?",
+                selectPracticeType: "Sélectionnez un type de pratique et un niveau de difficulté, puis cliquez sur \"Démarrer la Pratique\" pour commencer.",
+                howItWorks: "Comment Ça Marche :",
+                get10Questions: "Vous recevrez 10 questions basées sur le thème sélectionné",
+                getImmediateFeedback: "Répondez à chaque question et obtenez un feedback instantané",
+                trackProgress: "Suivez votre progression avec un scoring en temps réel",
+                seeFinalResults: "Voyez vos résultats finaux et votre précision à la fin",
+                calculatorTitle: "Calculatrice",
+                calculatorDescription: "Effectuez des calculs de base et avancés",
+                advancedFunctions: "Fonctions Avancées",
+                history: "Historique",
+                noCalculations: "Aucun calcul pour le moment",
+                clearHistory: "Effacer l'Historique",
+                convertersTitle: "Convertisseurs",
+                convertersDescription: "Convertissez entre différentes bases numériques et unités",
+                baseConverter: "Convertisseur de Base",
+                enterNumber: "Entrez un nombre :",
+                invalidInput: "Entrée invalide pour la base sélectionnée",
+                binary: "Binaire (base 2)",
+                octal: "Octal (base 8)",
+                decimal: "Décimal (base 10)",
+                hexadecimal: "Hexadécimal (base 16)",
+                clear: "Effacer",
+                swapInputBase: "Échanger la Base d'Entrée",
+                unitConverter: "Convertisseur d'Unités",
+                conversionType: "Type de Conversion :",
+                from: "De :",
+                to: "À :",
+                swapUnits: "Échanger les Unités",
+                toolsTitle: "Outils Mathématiques Avancés",
+                toolsDescription: "Outils spécialisés pour des opérations mathématiques complexes",
+                factorization: "Factorisation",
+                findPrimeFactors: "Trouvez les facteurs premiers d'un nombre",
+                enterANumber: "Entrez un nombre :",
+                calculateFactors: "Calculer les Facteurs",
+                primeFactors: "Facteurs Premiers :",
+                derivative: "Dérivée",
+                calculateDerivative: "Calculez la dérivée d'une fonction",
+                enterFunction: "Entrez une fonction (en termes de x) :",
+                calculateDerivativeButton: "Calculer la Dérivée",
+                derivativeResult: "Dérivée :",
+                matrixOperations: "Opérations Matricielles",
+                performMatrixOperations: "Effectuez des opérations avec des matrices",
+                operation: "Opération :",
+                determinant: "Déterminant",
+                transpose: "Transposée",
+                inverse: "Inverse",
+                matrix: "Matrice :",
+                calculate: "Calculer",
+                result: "Résultat :",
+                quadraticSolver: "Résolveur d'Équations Quadratiques",
+                solveQuadraticEquations: "Résolvez des équations quadratiques (ax² + bx + c = 0)",
+                solveEquation: "Résoudre l'Équation",
+                solutions: "Solutions :",
+                gcdLcm: "PGCD et PPCM",
+                calculateGcdLcm: "Calculez le PGCD et le PPCM de deux nombres",
+                firstNumber: "Premier nombre :",
+                secondNumber: "Deuxième nombre :",
+                statistics: "Statistiques",
+                calculateStatistics: "Calculez des statistiques de base pour un ensemble de nombres",
+                enterNumbers: "Entrez des nombres (séparés par des virgules) :",
+                calculateStatisticsButton: "Calculer les Statistiques",
+                mean: "Moyenne :",
+                median: "Médiane :",
+                mode: "Mode :",
+                standardDeviation: "Écart-Type :",
+                learningGuide: "Guide d'Apprentissage",
+                learningGuideMessage: "Le Guide d'Apprentissage sera disponible bientôt !",
+                progressTracking: "Suivi de la Progression",
+                progressTrackingMessage: "La fonction de suivi de progression sera disponible bientôt !",
+                allRightsReserved: "Tous droits réservés.",
+                quickLinks: "Liens Rapides",
+                resources: "Ressources",
+                mathGlossary: "Glossaire Mathématique",
+                faq: "FAQ",
+                length: "Longueur",
+                weight: "Poids",
+                temperature: "Température",
+                area: "Surface",
+                volume: "Volume",
+                time: "Temps",
+                determinant: "Déterminant",
+                transpose: "Transposée",
+                inverse: "Inverse",
+                arithmetic: "Arithmétique",
+                algebra: "Algèbre",
+                geometry: "Géométrie",
+                trigonometry: "Trigonométrie",
+                easy: "Facile",
+                medium: "Moyen",
+                hard: "Difficile",
+                madeBy: "Créé par Yqy Studio (Équipe Individuelle)"
+            }
+        };
+        
+        let currentLanguage = 'en';
+        
+        function switchLanguage(lang) {
+            console.log('Switching language to:', lang);
+            currentLanguage = lang;
+            document.getElementById('html-root').lang = lang;
+            document.getElementById('current-language').textContent = translations[lang].currentLanguage;
+            document.getElementById('page-title').textContent = translations[lang].pageTitle;
+            
+            // Update all elements with data-lang attribute
+            const dataLangElements = document.querySelectorAll('[data-lang]');
+            console.log('Found data-lang elements:', dataLangElements.length);
+            dataLangElements.forEach(element => {
+                const key = element.getAttribute('data-lang');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                } else {
+                    console.warn('Missing translation for key:', key, 'in language:', lang);
+                }
+            });
+            
+            // Update select options
+            const optionElements = document.querySelectorAll('select option[data-lang]');
+            console.log('Found option elements:', optionElements.length);
+            optionElements.forEach(option => {
+                const key = option.getAttribute('data-lang');
+                if (translations[lang][key]) {
+                    option.textContent = translations[lang][key];
+                } else {
+                    console.warn('Missing translation for option key:', key, 'in language:', lang);
+                }
+            });
+            
+            // Update placeholders and other attributes
+            updateFormElements(lang);
+            console.log('Language switch completed');
+        }
+        
+        function updateFormElements(lang) {
+            // Practice section
+            document.getElementById('answer-input').placeholder = translations[lang].yourAnswer;
+            
+            // Base converter
+            document.getElementById('base-input').placeholder = translations[lang].enterNumber;
+            
+            // Unit converter
+            document.getElementById('unit-from-value').placeholder = translations[lang].from;
+            
+            // Advanced tools
+            document.getElementById('factor-input').placeholder = translations[lang].enterANumber;
+            document.getElementById('derivative-input').placeholder = "x^2 + 3*x - 5";
+            document.getElementById('stats-input').placeholder = translations[lang].enterNumbers;
+        }
+        
+        // DOM Elements
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section');
+        const homeNavButtons = document.querySelectorAll('[data-nav]');
+        const languageToggle = document.getElementById('language-toggle');
+        
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            sections.forEach(section => {
+                section.classList.remove('section-active');
+                section.classList.add('section');
+            });
+            
+            // Show selected section
+            const selectedSection = document.getElementById(sectionId);
+            if (selectedSection) {
+                selectedSection.classList.remove('section');
+                selectedSection.classList.add('section-active');
+            }
+            
+            // Update navigation links
+            navLinks.forEach(link => {
+                if (link.dataset.section === sectionId) {
+                    link.classList.remove('nav-link-inactive');
+                    link.classList.add('nav-link-active');
+                } else {
+                    link.classList.remove('nav-link-active');
+                    link.classList.add('nav-link-inactive');
+                }
+            });
+        }
+        
+        // Navigation event listeners
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                showSection(link.dataset.section);
+            });
+        });
+        
+        homeNavButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                showSection(button.dataset.nav);
+            });
+        });
+        
+        // Home section buttons
+        document.getElementById('show-guide').addEventListener('click', () => {
+            alert(translations[currentLanguage].learningGuideMessage);
+        });
+        
+        document.getElementById('show-progress').addEventListener('click', () => {
+            alert(translations[currentLanguage].progressTrackingMessage);
+        });
+        
+        document.getElementById('footer-guide').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert(translations[currentLanguage].learningGuideMessage);
+        });
+        
+        document.getElementById('footer-progress').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert(translations[currentLanguage].progressTrackingMessage);
+        });
+        
+        // Math Practice Functionality
+        const practiceType = document.getElementById('practice-type');
+        const practiceLevel = document.getElementById('practice-level');
+        const startPracticeBtn = document.getElementById('start-practice');
+        const practiceContainer = document.getElementById('practice-container');
+        const practiceInstructions = document.getElementById('practice-instructions');
+        const questionDisplay = document.getElementById('question-display');
+        const answerInput = document.getElementById('answer-input');
+        const checkAnswerBtn = document.getElementById('check-answer');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const correctFeedback = document.getElementById('correct-feedback');
+        const incorrectFeedback = document.getElementById('incorrect-feedback');
+        const correctAnswerSpan = document.getElementById('correct-answer');
+        const nextQuestionBtn = document.getElementById('next-question');
+        const questionNumberSpan = document.getElementById('question-number');
+        const currentScoreSpan = document.getElementById('current-score');
+        const practiceStats = document.getElementById('practice-stats');
+        const correctCountSpan = document.getElementById('correct-count');
+        const accuracyPercentageSpan = document.getElementById('accuracy-percentage');
+        const restartPracticeBtn = document.getElementById('restart-practice');
+        const changeSettingsBtn = document.getElementById('change-settings');
+        
+        let currentQuestion = 1;
+        let score = 0;
+        let correctAnswers = 0;
+        let currentAnswer = '';
+        let questions = [];
+        
+        // Generate practice questions
+        function generateQuestions() {
+            questions = [];
+            const type = practiceType.value;
+            const level = practiceLevel.value;
+            
+            for (let i = 0; i < 10; i++) {
+                let question, answer;
+                
+                switch (type) {
+                    case 'arithmetic':
+                        if (level === 'easy') {
+                            // Simple addition and subtraction
+                            const num1 = Math.floor(Math.random() * 20) + 1;
+                            const num2 = Math.floor(Math.random() * 20) + 1;
+                            const operation = Math.random() > 0.5 ? '+' : '-';
+                            
+                            question = `${num1} ${operation} ${num2} = ?`;
+                            answer = operation === '+' ? (num1 + num2).toString() : (num1 - num2).toString();
+                        } else if (level === 'medium') {
+                            // Multiplication and division
+                            const num1 = Math.floor(Math.random() * 12) + 1;
+                            const num2 = Math.floor(Math.random() * 12) + 1;
+                            const operation = Math.random() > 0.5 ? '×' : '÷';
+                            
+                            question = `${num1} ${operation} ${num2} = ?`;
+                            answer = operation === '×' ? (num1 * num2).toString() : (num1 * num2).toString(); // Division answers are whole numbers
+                        } else {
+                            // Mixed operations with parentheses
+                            const num1 = Math.floor(Math.random() * 10) + 1;
+                            const num2 = Math.floor(Math.random() * 10) + 1;
+                            const num3 = Math.floor(Math.random() * 10) + 1;
+                            
+                            question = `${num1} + ${num2} × ${num3} = ?`;
+                            answer = (num1 + num2 * num3).toString();
+                        }
+                        break;
+                        
+                    case 'algebra':
+                        if (level === 'easy') {
+                            // Simple linear equations
+                            const a = Math.floor(Math.random() * 10) + 1;
+                            const b = Math.floor(Math.random() * 20) + 1;
+                            const c = a + b;
+                            
+                            question = `${a} + x = ${c}. Solve for x.`;
+                            answer = b.toString();
+                        } else if (level === 'medium') {
+                            // Two-step equations
+                            const a = Math.floor(Math.random() * 5) + 1;
+                            const b = Math.floor(Math.random() * 10) + 1;
+                            const c = Math.floor(Math.random() * 30) + 10;
+                            
+                            question = `${a}x + ${b} = ${a * c + b}. Solve for x.`;
+                            answer = c.toString();
+                        } else {
+                            // Quadratic equations with integer roots
+                            const root1 = Math.floor(Math.random() * 10) + 1;
+                            const root2 = Math.floor(Math.random() * 10) + 1;
+                            const a = 1;
+                            const b = -(root1 + root2);
+                            const c = root1 * root2;
+                            
+                            question = `x² + ${b > 0 ? '+' : ''}${b}x + ${c} = 0. What is one of the roots?`;
+                            answer = Math.random() > 0.5 ? root1.toString() : root2.toString();
+                        }
+                        break;
+                        
+                    case 'geometry':
+                        if (level === 'easy') {
+                            // Perimeter of rectangles
+                            const length = Math.floor(Math.random() * 10) + 1;
+                            const width = Math.floor(Math.random() * 10) + 1;
+                            
+                            question = `What is the perimeter of a rectangle with length ${length} and width ${width}?`;
+                            answer = (2 * (length + width)).toString();
+                        } else if (level === 'medium') {
+                            // Area of triangles
+                            const base = Math.floor(Math.random() * 10) + 1;
+                            const height = Math.floor(Math.random() * 10) + 1;
+                            
+                            question = `What is the area of a triangle with base ${base} and height ${height}?`;
+                            answer = ((base * height) / 2).toString();
+                        } else {
+                            // Volume of cubes and spheres
+                            const choice = Math.random() > 0.5;
+                            
+                            if (choice) {
+                                const side = Math.floor(Math.random() * 5) + 1;
+                                question = `What is the volume of a cube with side length ${side}?`;
+                                answer = (side ** 3).toString();
+                            } else {
+                                const radius = Math.floor(Math.random() * 5) + 1;
+                                question = `What is the volume of a sphere with radius ${radius}? (Use π = 3.14)`;
+                                answer = ((4/3) * 3.14 * radius ** 3).toFixed(1);
+                            }
+                        }
+                        break;
+                        
+                    case 'trigonometry':
+                        if (level === 'easy') {
+                            // Basic sine, cosine, tangent values
+                            const angle = [0, 30, 45, 60, 90][Math.floor(Math.random() * 5)];
+                            const functionName = ['sin', 'cos', 'tan'][Math.floor(Math.random() * 3)];
+                            
+                            question = `What is ${functionName}(${angle}°)?`;
+                            
+                            if (angle === 0) {
+                                answer = functionName === 'sin' ? '0' : functionName === 'cos' ? '1' : '0';
+                            } else if (angle === 30) {
+                                answer = functionName === 'sin' ? '0.5' : functionName === 'cos' ? '√3/2' : '1/√3';
+                            } else if (angle === 45) {
+                                answer = functionName === 'sin' ? '√2/2' : functionName === 'cos' ? '√2/2' : '1';
+                            } else if (angle === 60) {
+                                answer = functionName === 'sin' ? '√3/2' : functionName === 'cos' ? '0.5' : '√3';
+                            } else { // angle === 90
+                                answer = functionName === 'sin' ? '1' : functionName === 'cos' ? '0' : 'undefined';
+                            }
+                        } else if (level === 'medium') {
+                            // Pythagorean theorem
+                            const a = Math.floor(Math.random() * 10) + 1;
+                            const b = Math.floor(Math.random() * 10) + 1;
+                            const c = Math.sqrt(a ** 2 + b ** 2);
+                            
+                            question = `In a right triangle, if one leg is ${a} and the other leg is ${b}, what is the hypotenuse?`;
+                            answer = c.toFixed(1);
+                        } else {
+                            // Law of sines/cosines
+                            const choice = Math.random() > 0.5;
+                            
+                            if (choice) {
+                                // Law of sines
+                                const angleA = Math.floor(Math.random() * 60) + 30; // 30-90 degrees
+                                const sideA = Math.floor(Math.random() * 10) + 5;
+                                const angleB = Math.floor(Math.random() * 60) + 30;
+                                
+                                question = `Using the Law of Sines: If angle A = ${angleA}°, side a = ${sideA}, and angle B = ${angleB}°, what is side b?`;
+                                answer = ((sideA * Math.sin(angleB * Math.PI / 180)) / Math.sin(angleA * Math.PI / 180)).toFixed(1);
+                            } else {
+                                // Law of cosines
+                                const sideA = Math.floor(Math.random() * 10) + 5;
+                                const sideB = Math.floor(Math.random() * 10) + 5;
+                                const angleC = Math.floor(Math.random() * 120) + 30; // 30-150 degrees
+                                
+                                question = `Using the Law of Cosines: If side a = ${sideA}, side b = ${sideB}, and angle C = ${angleC}°, what is side c?`;
+                                answer = Math.sqrt(sideA ** 2 + sideB ** 2 - 2 * sideA * sideB * Math.cos(angleC * Math.PI / 180)).toFixed(1);
+                            }
+                        }
+                        break;
+                }
+                
+                questions.push({ question, answer });
+            }
+        }
+        
+        // Display current question
+        function displayQuestion() {
+            if (currentQuestion <= 10) {
+                questionDisplay.textContent = questions[currentQuestion - 1].question;
+                questionNumberSpan.textContent = currentQuestion;
+                answerInput.value = '';
+                feedbackContainer.classList.add('hidden');
+                answerInput.focus();
+            }
+        }
+        
+        // Check answer
+        function checkAnswer() {
+            const userAnswer = answerInput.value.trim();
+            currentAnswer = questions[currentQuestion - 1].answer;
+            
+            feedbackContainer.classList.remove('hidden');
+            
+            if (userAnswer === currentAnswer) {
+                correctFeedback.classList.remove('hidden');
+                incorrectFeedback.classList.add('hidden');
+                score += 10;
+                correctAnswers++;
+            } else {
+                correctFeedback.classList.add('hidden');
+                incorrectFeedback.classList.remove('hidden');
+                correctAnswerSpan.textContent = currentAnswer;
+            }
+            
+            currentScoreSpan.textContent = score;
+        }
+        
+        // Next question
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion <= 10) {
+                displayQuestion();
+            } else {
+                showPracticeResults();
+            }
+        }
+        
+        // Show practice results
+        function showPracticeResults() {
+            practiceContainer.classList.add('hidden');
+            practiceStats.classList.remove('hidden');
+            
+            correctCountSpan.textContent = correctAnswers;
+            const accuracy = Math.round((correctAnswers / 10) * 100);
+            accuracyPercentageSpan.textContent = `${accuracy}%`;
+        }
+        
+        // Restart practice
+        function restartPractice() {
+            currentQuestion = 1;
+            score = 0;
+            correctAnswers = 0;
+            
+            generateQuestions();
+            displayQuestion();
+            
+            practiceStats.classList.add('hidden');
+            practiceContainer.classList.remove('hidden');
+            currentScoreSpan.textContent = '0';
+        }
+        
+        // Change settings
+        function changeSettings() {
+            currentQuestion = 1;
+            score = 0;
+            correctAnswers = 0;
+            
+            practiceStats.classList.add('hidden');
+            practiceContainer.classList.add('hidden');
+            practiceInstructions.classList.remove('hidden');
+        }
+        
+        // Practice event listeners
+        startPracticeBtn.addEventListener('click', () => {
+            generateQuestions();
+            displayQuestion();
+            
+            practiceInstructions.classList.add('hidden');
+            practiceContainer.classList.remove('hidden');
+            practiceStats.classList.add('hidden');
+            
+            currentQuestion = 1;
+            score = 0;
+            correctAnswers = 0;
+            currentScoreSpan.textContent = '0';
+        });
+        
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+        
+        nextQuestionBtn.addEventListener('click', nextQuestion);
+        
+        restartPracticeBtn.addEventListener('click', restartPractice);
+        
+        changeSettingsBtn.addEventListener('click', changeSettings);
+        
+        // Calculator Functionality
+        const calculatorDisplay = document.getElementById('calculator-display');
+        const calculatorExpression = document.getElementById('calculator-expression');
+        const calculatorButtons = document.querySelectorAll('[data-calc]');
+        const calculationHistory = document.getElementById('calculation-history');
+        const clearHistoryBtn = document.getElementById('clear-history');
+        
+        let currentInput = '0';
+        let previousInput = '';
+        let operator = null;
+        let shouldResetDisplay = false;
+        let history = [];
+        
+        // Update calculator display
+        function updateDisplay() {
+            calculatorDisplay.textContent = currentInput;
+        }
+        
+        // Format number for display
+        function formatNumber(num) {
+            if (num === 'Infinity' || num === '-Infinity') {
+                return 'Error';
+            }
+            
+            const parsedNum = parseFloat(num);
+            
+            if (isNaN(parsedNum)) {
+                return 'Error';
+            }
+            
+            // Handle very large and very small numbers
+            if (Math.abs(parsedNum) > 1e15) {
+                return parsedNum.toExponential(6);
+            } else if (Math.abs(parsedNum) < 1e-6 && parsedNum !== 0) {
+                return parsedNum.toExponential(6);
+            }
+            
+            // Remove unnecessary trailing zeros
+            return parseFloat(parsedNum.toString());
+        }
+        
+        // Perform calculation
+        function calculate() {
+            if (!operator || previousInput === '') return;
+            
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            let result;
+            
+            switch (operator) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    if (current === 0) {
+                        result = 'Error';
+                    } else {
+                        result = prev / current;
+                    }
+                    break;
+                case '%':
+                    result = prev % current;
+                    break;
+                default:
+                    return;
+            }
+            
+            // Add to history
+            const expression = `${previousInput} ${getOperatorSymbol(operator)} ${currentInput} = ${formatNumber(result)}`;
+            addToHistory(expression);
+            
+            // Reset calculator state
+            currentInput = formatNumber(result).toString();
+            previousInput = '';
+            operator = null;
+            shouldResetDisplay = true;
+            
+            // Update display
+            calculatorExpression.textContent = '';
+            updateDisplay();
+        }
+        
+        // Get operator symbol for display
+        function getOperatorSymbol(op) {
+            switch (op) {
+                case '+': return '+';
+                case '-': return '-';
+                case '*': return '×';
+                case '/': return '÷';
+                case '%': return '%';
+                default: return '';
+            }
+        }
+        
+        // Add calculation to history
+        function addToHistory(expression) {
+            history.unshift(expression);
+            if (history.length > 20) {
+                history.pop();
+            }
+            updateHistoryDisplay();
+        }
+        
+        // Update history display
+        function updateHistoryDisplay() {
+            if (history.length === 0) {
+                calculationHistory.innerHTML = `<div class="text-gray-500 text-center py-4" data-lang="noCalculations">No calculations yet</div>`;
+                return;
+            }
+            
+            calculationHistory.innerHTML = history.map(expr => 
+                `<div class="text-gray-800 py-1 border-b border-gray-100 font-mono text-sm">${expr}</div>`
+            ).join('');
+        }
+        
+        // Calculator button click handler
+        function handleCalculatorInput(input) {
+            switch (input) {
+                case 'clear':
+                    currentInput = '0';
+                    previousInput = '';
+                    operator = null;
+                    calculatorExpression.textContent = '';
+                    break;
+                    
+                case 'clear-entry':
+                    currentInput = '0';
+                    break;
+                    
+                case 'backspace':
+                    if (currentInput.length > 1) {
+                        currentInput = currentInput.slice(0, -1);
+                    } else {
+                        currentInput = '0';
+                    }
+                    break;
+                    
+                case '=':
+                    calculate();
+                    return;
+                    
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                case '%':
+                    if (previousInput !== '' && !shouldResetDisplay) {
+                        calculate();
+                    }
+                    operator = input;
+                    previousInput = currentInput;
+                    calculatorExpression.textContent = `${currentInput} ${getOperatorSymbol(input)}`;
+                    shouldResetDisplay = true;
+                    return;
+                    
+                case 'sqrt':
+                    const sqrtResult = Math.sqrt(parseFloat(currentInput));
+                    const sqrtExpr = `√${currentInput} = ${formatNumber(sqrtResult)}`;
+                    addToHistory(sqrtExpr);
+                    currentInput = formatNumber(sqrtResult).toString();
+                    break;
+                    
+                case 'power':
+                    const powerResult = Math.pow(parseFloat(currentInput), 2);
+                    const powerExpr = `${currentInput}² = ${formatNumber(powerResult)}`;
+                    addToHistory(powerExpr);
+                    currentInput = formatNumber(powerResult).toString();
+                    break;
+                    
+                case '1/x':
+                    if (parseFloat(currentInput) === 0) {
+                        currentInput = 'Error';
+                    } else {
+                        const reciprocalResult = 1 / parseFloat(currentInput);
+                        const reciprocalExpr = `1/${currentInput} = ${formatNumber(reciprocalResult)}`;
+                        addToHistory(reciprocalExpr);
+                        currentInput = formatNumber(reciprocalResult).toString();
+                    }
+                    break;
+                    
+                case 'pi':
+                    currentInput = Math.PI.toString();
+                    break;
+                    
+                case '.':
+                    if (!currentInput.includes('.')) {
+                        currentInput += '.';
+                    }
+                    break;
+                    
+                default:
+                    // Number input
+                    if (shouldResetDisplay) {
+                        currentInput = input;
+                        shouldResetDisplay = false;
+                    } else {
+                        currentInput = currentInput === '0' ? input : currentInput + input;
+                    }
+            }
+            
+            updateDisplay();
+        }
+        
+        // Calculator event listeners
+        calculatorButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                handleCalculatorInput(button.dataset.calc);
+            });
+        });
+        
+        clearHistoryBtn.addEventListener('click', () => {
+            history = [];
+            updateHistoryDisplay();
+        });
+        
+        // Base Converter Functionality
+        const baseInput = document.getElementById('base-input');
+        const inputBase = document.getElementById('input-base');
+        const binaryOutput = document.getElementById('binary-output');
+        const octalOutput = document.getElementById('octal-output');
+        const decimalOutput = document.getElementById('decimal-output');
+        const hexadecimalOutput = document.getElementById('hexadecimal-output');
+        const clearBaseBtn = document.getElementById('clear-base');
+        const swapBasesBtn = document.getElementById('swap-bases');
+        
+        function convertNumber() {
+            const input = baseInput.value.trim();
+            const base = parseInt(inputBase.value);
+            
+            if (!input) {
+                binaryOutput.value = '';
+                octalOutput.value = '';
+                decimalOutput.value = '';
+                hexadecimalOutput.value = '';
+                return;
+            }
+            
+            try {
+                // Convert input to decimal
+                const decimal = parseInt(input, base);
+                
+                if (isNaN(decimal)) {
+                    throw new Error('Invalid input');
+                }
+                
+                // Convert decimal to other bases
+                binaryOutput.value = decimal.toString(2);
+                octalOutput.value = decimal.toString(8);
+                decimalOutput.value = decimal.toString(10);
+                hexadecimalOutput.value = decimal.toString(16).toUpperCase();
+            } catch (error) {
+                binaryOutput.value = translations[currentLanguage].invalidInput;
+                octalOutput.value = translations[currentLanguage].invalidInput;
+                decimalOutput.value = translations[currentLanguage].invalidInput;
+                hexadecimalOutput.value = translations[currentLanguage].invalidInput;
+            }
+        }
+        
+        // Base converter event listeners
+        baseInput.addEventListener('input', convertNumber);
+        inputBase.addEventListener('change', convertNumber);
+        
+        clearBaseBtn.addEventListener('click', () => {
+            baseInput.value = '';
+            convertNumber();
+        });
+        
+        swapBasesBtn.addEventListener('click', () => {
+            const currentBase = inputBase.value;
+            const bases = ['2', '8', '10', '16'];
+            const currentIndex = bases.indexOf(currentBase);
+            const nextIndex = (currentIndex + 1) % bases.length;
+            inputBase.value = bases[nextIndex];
+            convertNumber();
+        });
+        
+        // Unit Converter Functionality
+        const unitType = document.getElementById('unit-type');
+        const unitFromValue = document.getElementById('unit-from-value');
+        const unitFrom = document.getElementById('unit-from');
+        const unitToValue = document.getElementById('unit-to-value');
+        const unitTo = document.getElementById('unit-to');
+        const clearUnitBtn = document.getElementById('clear-unit');
+        const swapUnitsBtn = document.getElementById('swap-units');
+        
+        const unitConversions = {
+            length: {
+                units: ['meter', 'kilometer', 'centimeter', 'millimeter', 'micrometer', 'nanometer', 'inch', 'foot', 'yard', 'mile', 'nauticalMile', 'astronomicalUnit', 'lightYear'],
+                names: {
+                    en: ['Meter (m)', 'Kilometer (km)', 'Centimeter (cm)', 'Millimeter (mm)', 'Micrometer (μm)', 'Nanometer (nm)', 'Inch (in)', 'Foot (ft)', 'Yard (yd)', 'Mile (mi)', 'Nautical Mile (nmi)', 'Astronomical Unit (AU)', 'Light Year (ly)'],
+                    zh: ['米 (m)', '千米 (km)', '厘米 (cm)', '毫米 (mm)', '微米 (μm)', '纳米 (nm)', '英寸 (in)', '英尺 (ft)', '码 (yd)', '英里 (mi)', '海里 (nmi)', '天文单位 (AU)', '光年 (ly)']
+                },
+                toMeter: {
+                    meter: 1,
+                    kilometer: 1000,
+                    centimeter: 0.01,
+                    millimeter: 0.001,
+                    micrometer: 0.000001,
+                    nanometer: 0.000000001,
+                    inch: 0.0254,
+                    foot: 0.3048,
+                    yard: 0.9144,
+                    mile: 1609.34,
+                    nauticalMile: 1852,
+                    astronomicalUnit: 149597870700,
+                    lightYear: 9460730472580800
+                }
+            },
+            weight: {
+                units: ['kilogram', 'gram', 'milligram', 'microgram', 'metricTon', 'kiloton', 'pound', 'ounce', 'stone', 'shortTon', 'longTon', 'carat'],
+                names: {
+                    en: ['Kilogram (kg)', 'Gram (g)', 'Milligram (mg)', 'Microgram (μg)', 'Metric Ton (t)', 'Kilotonne (kt)', 'Pound (lb)', 'Ounce (oz)', 'Stone (st)', 'US Short Ton', 'Imperial Long Ton', 'Carat (ct)'],
+                    zh: ['千克 (kg)', '克 (g)', '毫克 (mg)', '微克 (μg)', '吨 (t)', '千吨 (kt)', '磅 (lb)', '盎司 (oz)', '英石 (st)', '美制短吨', '英制长吨', '克拉 (ct)']
+                },
+                toKilogram: {
+                    kilogram: 1,
+                    gram: 0.001,
+                    milligram: 0.000001,
+                    microgram: 0.000000001,
+                    metricTon: 1000,
+                    kiloton: 1000000,
+                    pound: 0.453592,
+                    ounce: 0.0283495,
+                    stone: 6.35029,
+                    shortTon: 907.185,
+                    longTon: 1016.05,
+                    carat: 0.0002
+                }
+            },
+            temperature: {
+                units: ['celsius', 'fahrenheit', 'kelvin', 'rankine', 'reaumur'],
+                names: {
+                    en: ['Celsius (°C)', 'Fahrenheit (°F)', 'Kelvin (K)', 'Rankine (°R)', 'Réaumur (°Ré)'],
+                    zh: ['摄氏度 (°C)', '华氏度 (°F)', '开尔文 (K)', '兰氏度 (°R)', '列氏度 (°Ré)']
+                }
+            },
+            area: {
+                units: ['squareMeter', 'squareKilometer', 'squareCentimeter', 'squareMillimeter', 'squareMile', 'squareYard', 'squareFoot', 'squareInch', 'acre', 'hectare', 'squareNauticalMile', 'township', 'section'],
+                names: {
+                    en: ['Square Meter (m²)', 'Square Kilometer (km²)', 'Square Centimeter (cm²)', 'Square Millimeter (mm²)', 'Square Mile (mi²)', 'Square Yard (yd²)', 'Square Foot (ft²)', 'Square Inch (in²)', 'Acre', 'Hectare', 'Square Nautical Mile (nmi²)', 'Township', 'Section'],
+                    zh: ['平方米 (m²)', '平方千米 (km²)', '平方厘米 (cm²)', '平方毫米 (mm²)', '平方英里 (mi²)', '平方码 (yd²)', '平方英尺 (ft²)', '平方英寸 (in²)', '英亩', '公顷', '平方海里 (nmi²)', '镇区', '区段']
+                },
+                toSquareMeter: {
+                    squareMeter: 1,
+                    squareKilometer: 1000000,
+                    squareCentimeter: 0.0001,
+                    squareMillimeter: 0.000001,
+                    squareMile: 2590000,
+                    squareYard: 0.836127,
+                    squareFoot: 0.092903,
+                    squareInch: 0.00064516,
+                    acre: 4046.86,
+                    hectare: 10000,
+                    squareNauticalMile: 3429904,
+                    township: 93239571.972,
+                    section: 2589988.11
+                }
+            },
+            volume: {
+                units: ['liter', 'milliliter', 'cubicMeter', 'cubicCentimeter', 'cubicKilometer', 'cubicMillimeter', 'cubicInch', 'cubicFoot', 'cubicYard', 'usGallon', 'usQuart', 'usPint', 'usCup', 'usFluidOunce', 'imperialGallon', 'imperialQuart', 'imperialPint', 'imperialFluidOunce', 'barrel', 'bushel'],
+                names: {
+                    en: ['Liter (L)', 'Milliliter (mL)', 'Cubic Meter (m³)', 'Cubic Centimeter (cm³)', 'Cubic Kilometer (km³)', 'Cubic Millimeter (mm³)', 'Cubic Inch (in³)', 'Cubic Foot (ft³)', 'Cubic Yard (yd³)', 'US Gallon (gal)', 'US Quart (qt)', 'US Pint (pt)', 'US Cup (cup)', 'US Fluid Ounce (fl oz)', 'Imperial Gallon (gal)', 'Imperial Quart (qt)', 'Imperial Pint (pt)', 'Imperial Fluid Ounce (fl oz)', 'Barrel (bbl)', 'Bushel (bu)'],
+                    zh: ['升 (L)', '毫升 (mL)', '立方米 (m³)', '立方厘米 (cm³)', '立方千米 (km³)', '立方毫米 (mm³)', '立方英寸 (in³)', '立方英尺 (ft³)', '立方码 (yd³)', '美制加仑 (gal)', '美制夸脱 (qt)', '美制品脱 (pt)', '美制杯 (cup)', '美制液量盎司 (fl oz)', '英制加仑 (gal)', '英制夸脱 (qt)', '英制品脱 (pt)', '英制液量盎司 (fl oz)', '桶 (bbl)', '蒲式耳 (bu)']
+                },
+                toLiter: {
+                    liter: 1,
+                    milliliter: 0.001,
+                    cubicMeter: 1000,
+                    cubicCentimeter: 0.001,
+                    cubicKilometer: 1000000000000,
+                    cubicMillimeter: 0.000001,
+                    cubicInch: 0.0163871,
+                    cubicFoot: 28.3168,
+                    cubicYard: 764.555,
+                    usGallon: 3.78541,
+                    usQuart: 0.946353,
+                    usPint: 0.473176,
+                    usCup: 0.236588,
+                    usFluidOunce: 0.0295735,
+                    imperialGallon: 4.54609,
+                    imperialQuart: 1.13652,
+                    imperialPint: 0.568261,
+                    imperialFluidOunce: 0.0284131,
+                    barrel: 158.987,
+                    bushel: 35.2391
+                }
+            },
+            time: {
+                units: ['nanosecond', 'microsecond', 'millisecond', 'second', 'minute', 'hour', 'day', 'week', 'month', 'year', 'decade', 'century', 'millennium', 'siderealDay', 'siderealYear'],
+                names: {
+                    en: ['Nanosecond (ns)', 'Microsecond (μs)', 'Millisecond (ms)', 'Second (s)', 'Minute (min)', 'Hour (hr)', 'Day (d)', 'Week (wk)', 'Month (mo)', 'Year (yr)', 'Decade', 'Century', 'Millennium', 'Sidereal Day', 'Sidereal Year'],
+                    zh: ['纳秒 (ns)', '微秒 (μs)', '毫秒 (ms)', '秒 (s)', '分钟 (min)', '小时 (hr)', '天 (d)', '周 (wk)', '月 (mo)', '年 (yr)', '十年', '世纪', '千年', '恒星日', '恒星年']
+                },
+                toSecond: {
+                    nanosecond: 0.000000001,
+                    microsecond: 0.000001,
+                    millisecond: 0.001,
+                    second: 1,
+                    minute: 60,
+                    hour: 3600,
+                    day: 86400,
+                    week: 604800,
+                    month: 2629746,
+                    year: 31556952,
+                    decade: 315569520,
+                    century: 3155695200,
+                    millennium: 31556952000,
+                    siderealDay: 86164.0905,
+                    siderealYear: 31558149.7635
+                }
+            }
+        };
+        
+        function populateUnitSelects() {
+            const type = unitType.value;
+            const conversion = unitConversions[type];
+            const lang = currentLanguage;
+            
+            // Clear existing options
+            unitFrom.innerHTML = '';
+            unitTo.innerHTML = '';
+            
+            // Add options
+            conversion.units.forEach((unit, index) => {
+                const fromOption = document.createElement('option');
+                fromOption.value = unit;
+                fromOption.textContent = conversion.names[lang][index];
+                unitFrom.appendChild(fromOption);
+                
+                const toOption = document.createElement('option');
+                toOption.value = unit;
+                toOption.textContent = conversion.names[lang][index];
+                unitTo.appendChild(toOption);
+            });
+            
+            // Set default selections
+            unitFrom.selectedIndex = 0;
+            unitTo.selectedIndex = 1;
+        }
+        
+        function convertUnit() {
+            const type = unitType.value;
+            const fromValue = parseFloat(unitFromValue.value);
+            const fromUnit = unitFrom.value;
+            const toUnit = unitTo.value;
+            
+            if (isNaN(fromValue)) {
+                unitToValue.value = '';
+                return;
+            }
+            
+            let result;
+            
+            if (type === 'temperature') {
+                // Temperature conversions
+                let celsius;
+                
+                // Convert from source unit to Celsius
+                switch (fromUnit) {
+                    case 'celsius':
+                        celsius = fromValue;
+                        break;
+                    case 'fahrenheit':
+                        celsius = (fromValue - 32) * 5/9;
+                        break;
+                    case 'kelvin':
+                        celsius = fromValue - 273.15;
+                        break;
+                    case 'rankine':
+                        celsius = (fromValue - 491.67) * 5/9;
+                        break;
+                    case 'reaumur':
+                        celsius = fromValue * 5/4;
+                        break;
+                    default:
+                        celsius = fromValue;
+                }
+                
+                // Convert from Celsius to target unit
+                switch (toUnit) {
+                    case 'celsius':
+                        result = celsius;
+                        break;
+                    case 'fahrenheit':
+                        result = celsius * 9/5 + 32;
+                        break;
+                    case 'kelvin':
+                        result = celsius + 273.15;
+                        break;
+                    case 'rankine':
+                        result = (celsius + 273.15) * 9/5;
+                        break;
+                    case 'reaumur':
+                        result = celsius * 4/5;
+                        break;
+                    default:
+                        result = celsius;
+                }
+            } else {
+                // Other unit conversions
+                const conversion = unitConversions[type];
+                let baseValue;
+                
+                // Convert to base unit
+                if (type === 'length') {
+                    baseValue = fromValue * conversion.toMeter[fromUnit];
+                    result = baseValue / conversion.toMeter[toUnit];
+                } else if (type === 'weight') {
+                    baseValue = fromValue * conversion.toKilogram[fromUnit];
+                    result = baseValue / conversion.toKilogram[toUnit];
+                } else if (type === 'area') {
+                    baseValue = fromValue * conversion.toSquareMeter[fromUnit];
+                    result = baseValue / conversion.toSquareMeter[toUnit];
+                } else if (type === 'volume') {
+                    baseValue = fromValue * conversion.toLiter[fromUnit];
+                    result = baseValue / conversion.toLiter[toUnit];
+                } else if (type === 'time') {
+                    baseValue = fromValue * conversion.toSecond[fromUnit];
+                    result = baseValue / conversion.toSecond[toUnit];
+                }
+            }
+            
+            // Format result
+            if (Math.abs(result) >= 1e6 || (Math.abs(result) < 0.001 && result !== 0)) {
+                unitToValue.value = result.toExponential(6);
+            } else {
+                unitToValue.value = parseFloat(result.toFixed(10)).toString();
+            }
+        }
+        
+        // Unit converter event listeners
+        unitType.addEventListener('change', () => {
+            populateUnitSelects();
+            convertUnit();
+        });
+        
+        unitFromValue.addEventListener('input', convertUnit);
+        unitFrom.addEventListener('change', convertUnit);
+        unitTo.addEventListener('change', convertUnit);
+        
+        clearUnitBtn.addEventListener('click', () => {
+            unitFromValue.value = '';
+            unitToValue.value = '';
+        });
+        
+        swapUnitsBtn.addEventListener('click', () => {
+            const tempUnit = unitFrom.value;
+            unitFrom.value = unitTo.value;
+            unitTo.value = tempUnit;
+            convertUnit();
+        });
+        
+        // Advanced Math Tools Functionality
+        
+        // Factorization Tool
+        const factorInput = document.getElementById('factor-input');
+        const calculateFactorsBtn = document.getElementById('calculate-factors');
+        const factorResult = document.getElementById('factor-result');
+        const factorOutput = document.getElementById('factor-output');
+        
+        function calculateFactors() {
+            const number = parseInt(factorInput.value);
+            
+            if (isNaN(number) || number < 2) {
+                factorOutput.textContent = 'Please enter a valid number greater than 1.';
+                factorResult.classList.remove('hidden');
+                return;
+            }
+            
+            const factors = [];
+            let n = number;
+            
+            // Check for 2 separately
+            while (n % 2 === 0) {
+                factors.push(2);
+                n /= 2;
+            }
+            
+            // Check odd numbers from 3 to sqrt(n)
+            for (let i = 3; i <= Math.sqrt(n); i += 2) {
+                while (n % i === 0) {
+                    factors.push(i);
+                    n /= i;
+                }
+            }
+            
+            // If n is a prime number greater than 2
+            if (n > 2) {
+                factors.push(n);
+            }
+            
+            // Display result
+            if (factors.length === 1) {
+                factorOutput.textContent = `${number} is a prime number.`;
+            } else {
+                factorOutput.textContent = `${number} = ${factors.join(' × ')}`;
+            }
+            
+            factorResult.classList.remove('hidden');
+        }
+        
+        calculateFactorsBtn.addEventListener('click', calculateFactors);
+        
+        // Derivative Tool
+        const derivativeInput = document.getElementById('derivative-input');
+        const calculateDerivativeBtn = document.getElementById('calculate-derivative');
+        const derivativeResult = document.getElementById('derivative-result');
+        const derivativeOutput = document.getElementById('derivative-output');
+        
+        function calculateDerivative() {
+            const functionStr = derivativeInput.value.trim();
+            
+            if (!functionStr) {
+                derivativeOutput.textContent = 'Please enter a function.';
+                derivativeResult.classList.remove('hidden');
+                return;
+            }
+            
+            // This is a simplified derivative calculator
+            // In a real application, you would use a more sophisticated parser
+            let result = '';
+            
+            // Handle simple power functions: ax^n
+            const powerRegex = /^([+-]?\d*)x\^(\d+)$/;
+            const match = functionStr.match(powerRegex);
+            
+            if (match) {
+                const coefficient = match[1] === '' ? 1 : match[1] === '-' ? -1 : parseInt(match[1]);
+                const exponent = parseInt(match[2]);
+                
+                if (exponent === 0) {
+                    result = '0';
+                } else {
+                    const newCoefficient = coefficient * exponent;
+                    const newExponent = exponent - 1;
+                    
+                    if (newExponent === 0) {
+                        result = newCoefficient.toString();
+                    } else if (newExponent === 1) {
+                        result = newCoefficient === 1 ? 'x' : newCoefficient === -1 ? '-x' : `${newCoefficient}x`;
+                    } else {
+                        result = newCoefficient === 1 ? `x^${newExponent}` : newCoefficient === -1 ? `-x^${newExponent}` : `${newCoefficient}x^${newExponent}`;
+                    }
+                }
+            }
+            // Handle linear functions: ax + b
+            else if (/^([+-]?\d*)x([+-]\d+)?$/.test(functionStr)) {
+                const parts = functionStr.split('x');
+                const coefficient = parts[0] === '' ? 1 : parts[0] === '-' ? -1 : parseInt(parts[0]);
+                result = coefficient.toString();
+            }
+            // Handle constant functions
+            else if (/^[+-]?\d+$/.test(functionStr)) {
+                result = '0';
+            }
+            // Handle simple polynomials
+            else if (/^x$/.test(functionStr)) {
+                result = '1';
+            } else {
+                result = 'Unable to calculate derivative. Please use a simpler function format.';
+            }
+            
+            derivativeOutput.textContent = result;
+            derivativeResult.classList.remove('hidden');
+        }
+        
+        calculateDerivativeBtn.addEventListener('click', calculateDerivative);
+        
+        // Integral Calculator
+        const integralInput = document.getElementById('integral-input');
+        const calculateIntegralBtn = document.getElementById('calculate-integral');
+        const integralResult = document.getElementById('integral-result');
+        const integralOutput = document.getElementById('integral-output');
+        
+        function calculateIntegral() {
+            const functionStr = integralInput.value.trim();
+            
+            if (!functionStr) {
+                integralOutput.textContent = 'Please enter a function.';
+                integralResult.classList.remove('hidden');
+                return;
+            }
+            
+            // This is a simplified integral calculator
+            // In a real application, you would use a more sophisticated parser
+            let result = '';
+            
+            // Handle simple power functions: ax^n
+            const powerRegex = /^([+-]?\d*)x\^(\d+)$/;
+            const match = functionStr.match(powerRegex);
+            
+            if (match) {
+                const coefficient = match[1] === '' ? 1 : match[1] === '-' ? -1 : parseInt(match[1]);
+                const exponent = parseInt(match[2]);
+                
+                const newExponent = exponent + 1;
+                const newCoefficient = coefficient / newExponent;
+                
+                if (newCoefficient === 1) {
+                    result = newExponent === 1 ? 'x + C' : `x^${newExponent}/${newExponent} + C`;
+                } else if (newCoefficient === -1) {
+                    result = newExponent === 1 ? '-x + C' : `-x^${newExponent}/${newExponent} + C`;
+                } else if (Number.isInteger(newCoefficient)) {
+                    result = newExponent === 1 ? `${newCoefficient}x + C` : `${newCoefficient}x^${newExponent}/${newExponent} + C`;
+                } else {
+                    result = newExponent === 1 ? `${coefficient}x/${newExponent} + C` : `${coefficient}x^${newExponent}/${newExponent} + C`;
+                }
+            }
+            // Handle linear functions: ax
+            else if (/^([+-]?\d*)x$/.test(functionStr)) {
+                const parts = functionStr.split('x');
+                const coefficient = parts[0] === '' ? 1 : parts[0] === '-' ? -1 : parseInt(parts[0]);
+                const newCoefficient = coefficient / 2;
+                
+                if (newCoefficient === 1) {
+                    result = 'x^2/2 + C';
+                } else if (newCoefficient === -1) {
+                    result = '-x^2/2 + C';
+                } else if (Number.isInteger(newCoefficient)) {
+                    result = `${newCoefficient}x^2/2 + C`;
+                } else {
+                    result = `${coefficient}x^2/2 + C`;
+                }
+            }
+            // Handle constant functions
+            else if (/^[+-]?\d+$/.test(functionStr)) {
+                const constant = parseInt(functionStr);
+                result = constant === 1 ? 'x + C' : constant === -1 ? '-x + C' : `${constant}x + C`;
+            }
+            // Handle x
+            else if (/^x$/.test(functionStr)) {
+                result = 'x^2/2 + C';
+            } else {
+                result = 'Unable to calculate integral. Please use a simpler function format.';
+            }
+            
+            integralOutput.textContent = result;
+            integralResult.classList.remove('hidden');
+        }
+        
+        calculateIntegralBtn.addEventListener('click', calculateIntegral);
+        
+        // Matrix Operations
+        const matrixOperation = document.getElementById('matrix-operation');
+        const matrixInput = document.getElementById('matrix-input');
+        const matrixSize2Btn = document.getElementById('matrix-size-2');
+        const matrixSize3Btn = document.getElementById('matrix-size-3');
+        const calculateMatrixBtn = document.getElementById('calculate-matrix');
+        const matrixResult = document.getElementById('matrix-result');
+        const matrixOutput = document.getElementById('matrix-output');
+        
+        let matrixSize = 2;
+        
+        function createMatrixInput(size) {
+            matrixInput.innerHTML = '';
+            matrixInput.className = `grid grid-cols-${size} gap-2`;
+            
+            for (let i = 0; i < size * size; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'input-field matrix-cell';
+                input.step = 'any';
+                input.placeholder = i === 0 || i === size + 1 ? '1' : '0';
+                matrixInput.appendChild(input);
+            }
+        }
+        
+        function getMatrixValues() {
+            const inputs = matrixInput.querySelectorAll('.matrix-cell');
+            const matrix = [];
+            
+            for (let i = 0; i < matrixSize; i++) {
+                const row = [];
+                for (let j = 0; j < matrixSize; j++) {
+                    const value = parseFloat(inputs[i * matrixSize + j].value) || 0;
+                    row.push(value);
+                }
+                matrix.push(row);
+            }
+            
+            return matrix;
+        }
+        
+        function displayMatrix(matrix) {
+            let html = '<div class="grid grid-cols-2 gap-1">';
+            matrix.forEach(row => {
+                row.forEach(value => {
+                    html += `<div class="text-center py-1">${value}</div>`;
+                });
+            });
+            html += '</div>';
+            return html;
+        }
+        
+        function calculateDeterminant(matrix) {
+            if (matrixSize === 2) {
+                return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+            } else if (matrixSize === 3) {
+                return matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1])
+                     - matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0])
+                     + matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+            }
+        }
+        
+        function transposeMatrix(matrix) {
+            const result = [];
+            for (let i = 0; i < matrixSize; i++) {
+                result[i] = [];
+                for (let j = 0; j < matrixSize; j++) {
+                    result[i][j] = matrix[j][i];
+                }
+            }
+            return result;
+        }
+        
+        function inverseMatrix(matrix) {
+            const det = calculateDeterminant(matrix);
+            
+            if (det === 0) {
+                return null; // Matrix is singular
+            }
+            
+            if (matrixSize === 2) {
+                return [
+                    [matrix[1][1] / det, -matrix[0][1] / det],
+                    [-matrix[1][0] / det, matrix[0][0] / det]
+                ];
+            } else if (matrixSize === 3) {
+                // Adjugate matrix method for 3x3
+                const adjugate = [
+                    [
+                        matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1],
+                        matrix[0][2] * matrix[2][1] - matrix[0][1] * matrix[2][2],
+                        matrix[0][1] * matrix[1][2] - matrix[0][2] * matrix[1][1]
+                    ],
+                    [
+                        matrix[1][2] * matrix[2][0] - matrix[1][0] * matrix[2][2],
+                        matrix[0][0] * matrix[2][2] - matrix[0][2] * matrix[2][0],
+                        matrix[0][2] * matrix[1][0] - matrix[0][0] * matrix[1][2]
+                    ],
+                    [
+                        matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0],
+                        matrix[0][1] * matrix[2][0] - matrix[0][0] * matrix[2][1],
+                        matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+                    ]
+                ];
+                
+                // Transpose adjugate and divide by determinant
+                const transposed = transposeMatrix(adjugate);
+                const inverse = [];
+                
+                for (let i = 0; i < 3; i++) {
+                    inverse[i] = [];
+                    for (let j = 0; j < 3; j++) {
+                        inverse[i][j] = transposed[i][j] / det;
+                    }
+                }
+                
+                return inverse;
+            }
+        }
+        
+        function performMatrixOperation() {
+            const operation = matrixOperation.value;
+            const matrix = getMatrixValues();
+            let result;
+            
+            switch (operation) {
+                case 'determinant':
+                    const det = calculateDeterminant(matrix);
+                    matrixOutput.textContent = `Determinant = ${det}`;
+                    break;
+                    
+                case 'transpose':
+                    const transposed = transposeMatrix(matrix);
+                    matrixOutput.innerHTML = displayMatrix(transposed);
+                    break;
+                    
+                case 'inverse':
+                    const inverse = inverseMatrix(matrix);
+                    if (inverse === null) {
+                        matrixOutput.textContent = 'Matrix is singular (determinant = 0) and cannot be inverted.';
+                    } else {
+                        matrixOutput.innerHTML = displayMatrix(inverse);
+                    }
+                    break;
+            }
+            
+            matrixResult.classList.remove('hidden');
+        }
+        
+        // Matrix event listeners
+        matrixSize2Btn.addEventListener('click', () => {
+            matrixSize = 2;
+            createMatrixInput(2);
+            matrixResult.classList.add('hidden');
+        });
+        
+        matrixSize3Btn.addEventListener('click', () => {
+            matrixSize = 3;
+            createMatrixInput(3);
+            matrixResult.classList.add('hidden');
+        });
+        
+        calculateMatrixBtn.addEventListener('click', performMatrixOperation);
+        
+        // Quadratic Solver
+        const quadA = document.getElementById('quad-a');
+        const quadB = document.getElementById('quad-b');
+        const quadC = document.getElementById('quad-c');
+        const solveQuadraticBtn = document.getElementById('solve-quadratic');
+        const quadraticResult = document.getElementById('quadratic-result');
+        const quadraticOutput = document.getElementById('quadratic-output');
+        
+        function solveQuadratic() {
+            const a = parseFloat(quadA.value) || 0;
+            const b = parseFloat(quadB.value) || 0;
+            const c = parseFloat(quadC.value) || 0;
+            
+            if (a === 0) {
+                if (b === 0) {
+                    if (c === 0) {
+                        quadraticOutput.textContent = 'Infinite solutions (0 = 0)';
+                    } else {
+                        quadraticOutput.textContent = 'No solution (contradiction)';
+                    }
+                } else {
+                    // Linear equation: bx + c = 0
+                    const x = -c / b;
+                    quadraticOutput.textContent = `Linear equation: x = ${x}`;
+                }
+            } else {
+                // Quadratic equation: ax² + bx + c = 0
+                const discriminant = b * b - 4 * a * c;
+                
+                if (discriminant > 0) {
+                    const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                    const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                    quadraticOutput.textContent = `Two real solutions: x₁ = ${x1.toFixed(6)}, x₂ = ${x2.toFixed(6)}`;
+                } else if (discriminant === 0) {
+                    const x = -b / (2 * a);
+                    quadraticOutput.textContent = `One real solution: x = ${x.toFixed(6)}`;
+                } else {
+                    const realPart = -b / (2 * a);
+                    const imaginaryPart = Math.sqrt(-discriminant) / (2 * a);
+                    quadraticOutput.textContent = `Two complex solutions: x₁ = ${realPart.toFixed(6)} + ${imaginaryPart.toFixed(6)}i, x₂ = ${realPart.toFixed(6)} - ${imaginaryPart.toFixed(6)}i`;
+                }
+            }
+            
+            quadraticResult.classList.remove('hidden');
+        }
+        
+        solveQuadraticBtn.addEventListener('click', solveQuadratic);
+        
+        // GCD and LCM Calculator
+        const gcdLcmA = document.getElementById('gcd-lcm-a');
+        const gcdLcmB = document.getElementById('gcd-lcm-b');
+        const calculateGcdLcmBtn = document.getElementById('calculate-gcd-lcm');
+        const gcdLcmResult = document.getElementById('gcd-lcm-result');
+        const gcdOutput = document.getElementById('gcd-output');
+        const lcmOutput = document.getElementById('lcm-output');
+        
+        function gcd(a, b) {
+            while (b !== 0) {
+                const temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+        
+        function lcm(a, b) {
+            return Math.abs(a * b) / gcd(a, b);
+        }
+        
+        function calculateGcdLcm() {
+            const a = parseInt(gcdLcmA.value);
+            const b = parseInt(gcdLcmB.value);
+            
+            if (isNaN(a) || isNaN(b) || a < 1 || b < 1) {
+                gcdOutput.textContent = 'Please enter positive integers.';
+                lcmOutput.textContent = 'Please enter positive integers.';
+            } else {
+                gcdOutput.textContent = gcd(a, b).toString();
+                lcmOutput.textContent = lcm(a, b).toString();
+            }
+            
+            gcdLcmResult.classList.remove('hidden');
+        }
+        
+        calculateGcdLcmBtn.addEventListener('click', calculateGcdLcm);
+        
+        // Statistics Calculator
+        const statsInput = document.getElementById('stats-input');
+        const calculateStatsBtn = document.getElementById('calculate-stats');
+        const statsResult = document.getElementById('stats-result');
+        const meanOutput = document.getElementById('mean-output');
+        const medianOutput = document.getElementById('median-output');
+        const modeOutput = document.getElementById('mode-output');
+        const stdDevOutput = document.getElementById('std-dev-output');
+        
+        function calculateMean(numbers) {
+            return numbers.reduce((sum, num) => sum + num, 0) / numbers.length;
+        }
+        
+        function calculateMedian(numbers) {
+            const sorted = [...numbers].sort((a, b) => a - b);
+            const mid = Math.floor(sorted.length / 2);
+            
+            if (sorted.length % 2 === 0) {
+                return (sorted[mid - 1] + sorted[mid]) / 2;
+            } else {
+                return sorted[mid];
+            }
+        }
+        
+        function calculateMode(numbers) {
+            const frequency = {};
+            numbers.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+            });
+            
+            const maxFreq = Math.max(...Object.values(frequency));
+            const modes = Object.keys(frequency)
+                .filter(num => frequency[num] === maxFreq)
+                .map(num => parseFloat(num));
+            
+            if (modes.length === numbers.length) {
+                return 'No mode (all values occur with the same frequency)';
+            }
+            
+            return modes.length === 1 ? modes[0] : modes.join(', ');
+        }
+        
+        function calculateStandardDeviation(numbers) {
+            const mean = calculateMean(numbers);
+            const squaredDifferences = numbers.map(num => Math.pow(num - mean, 2));
+            const variance = calculateMean(squaredDifferences);
+            
+            return Math.sqrt(variance);
+        }
+        
+        function calculateStatistics() {
+            const input = statsInput.value.trim();
+            
+            if (!input) {
+                meanOutput.textContent = 'Please enter some numbers.';
+                medianOutput.textContent = 'Please enter some numbers.';
+                modeOutput.textContent = 'Please enter some numbers.';
+                stdDevOutput.textContent = 'Please enter some numbers.';
+                statsResult.classList.remove('hidden');
+                return;
+            }
+            
+            const numbers = input.split(',')
+                .map(num => parseFloat(num.trim()))
+                .filter(num => !isNaN(num));
+            
+            if (numbers.length === 0) {
+                meanOutput.textContent = 'No valid numbers found.';
+                medianOutput.textContent = 'No valid numbers found.';
+                modeOutput.textContent = 'No valid numbers found.';
+                stdDevOutput.textContent = 'No valid numbers found.';
+                statsResult.classList.remove('hidden');
+                return;
+            }
+            
+            const mean = calculateMean(numbers);
+            const median = calculateMedian(numbers);
+            const mode = calculateMode(numbers);
+            const stdDev = calculateStandardDeviation(numbers);
+            
+            meanOutput.textContent = mean.toFixed(4);
+            medianOutput.textContent = median.toFixed(4);
+            modeOutput.textContent = mode;
+            stdDevOutput.textContent = stdDev.toFixed(4);
+            
+            statsResult.classList.remove('hidden');
+        }
+        
+        calculateStatsBtn.addEventListener('click', calculateStatistics);
+        
+        // Initialize the application
+        function drawMicrosoftIcon() {
+            const canvas = document.getElementById('microsoftIcon');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const blockSize = 8;
+            const gap = 1;
+            const color = '#4B5563'; // gray-600
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw four squares
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, blockSize, blockSize);
+            ctx.fillRect(blockSize + gap, 0, blockSize, blockSize);
+            ctx.fillRect(0, blockSize + gap, blockSize, blockSize);
+            ctx.fillRect(blockSize + gap, blockSize + gap, blockSize, blockSize);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            drawMicrosoftIcon();
+            console.log('DOM loaded, initializing language...');
+            
+            // Show home section by default
+            showSection('home');
+            
+            // Update history display
+            updateHistoryDisplay();
+            
+            // Initialize unit converter
+            populateUnitSelects();
+            
+            // Initialize matrix input
+            createMatrixInput(2);
+            
+            // Check for saved language preference
+            const savedLang = localStorage.getItem('mathmaster-language');
+            console.log('Saved language:', savedLang);
+            if (savedLang && translations[savedLang]) {
+                console.log('Switching to saved language:', savedLang);
+                switchLanguage(savedLang);
+            } else {
+                console.log('No saved language, initializing with English');
+                switchLanguage('en');
+            }
+
+            // Update current language display
+            document.getElementById('current-language').textContent = currentLanguage === 'en' ? 'English' : '中文';
+            
+            // Add click event listener to language toggle
+            document.getElementById('language-toggle').addEventListener('click', () => {
+                const newLang = currentLanguage === 'en' ? 'zh' : 'en';
+                console.log('Language toggle clicked, switching to:', newLang);
+                switchLanguage(newLang);
+                // Save language preference
+                localStorage.setItem('mathmaster-language', newLang);
+            });
+        });
+    </script>
+
+</body></html>

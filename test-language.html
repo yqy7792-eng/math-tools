@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h1 class="text-3xl font-bold mb-8 text-center" data-lang="title">Language Switch Test</h1>
+        
+        <div class="flex justify-center mb-8">
+            <button id="language-toggle" class="bg-blue-500 text-white px-6 py-2 rounded-lg flex items-center">
+                <i class="fa fa-globe mr-2"></i>
+                <span id="current-language">English</span>
+            </button>
+        </div>
+        
+        <div class="space-y-6">
+            <div class="p-4 border rounded-lg">
+                <h2 class="text-xl font-semibold mb-2" data-lang="section1">Section 1: Basic Text</h2>
+                <p data-lang="section1Desc">This is a test paragraph to verify language switching functionality.</p>
+            </div>
+            
+            <div class="p-4 border rounded-lg">
+                <h2 class="text-xl font-semibold mb-2" data-lang="section2">Section 2: Form Elements</h2>
+                <div class="mb-4">
+                    <label for="test-input" class="block text-sm font-medium mb-1" data-lang="inputLabel">Input Label:</label>
+                    <input type="text" id="test-input" class="w-full border rounded px-3 py-2" data-lang-placeholder="inputPlaceholder">
+                </div>
+                <div>
+                    <label for="test-select" class="block text-sm font-medium mb-1" data-lang="selectLabel">Select Label:</label>
+                    <select id="test-select" class="w-full border rounded px-3 py-2">
+                        <option value="1" data-lang="option1">Option 1</option>
+                        <option value="2" data-lang="option2">Option 2</option>
+                        <option value="3" data-lang="option3">Option 3</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="p-4 border rounded-lg">
+                <h2 class="text-xl font-semibold mb-2" data-lang="section3">Section 3: Buttons</h2>
+                <button class="bg-green-500 text-white px-4 py-2 rounded" data-lang="button1">Button 1</button>
+                <button class="bg-red-500 text-white px-4 py-2 rounded ml-2" data-lang="button2">Button 2</button>
+            </div>
+        </div>
+        
+        <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+            <h3 class="font-semibold mb-2" data-lang="debugTitle">Debug Information:</h3>
+            <div id="debug-info" class="font-mono text-sm"></div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                title: "Language Switch Test",
+                currentLanguage: "English",
+                section1: "Section 1: Basic Text",
+                section1Desc: "This is a test paragraph to verify language switching functionality.",
+                section2: "Section 2: Form Elements",
+                inputLabel: "Input Label:",
+                inputPlaceholder: "Enter text here...",
+                selectLabel: "Select Label:",
+                option1: "Option 1",
+                option2: "Option 2",
+                option3: "Option 3",
+                section3: "Section 3: Buttons",
+                button1: "Button 1",
+                button2: "Button 2",
+                debugTitle: "Debug Information:"
+            },
+            zh: {
+                title: "语言切换测试",
+                currentLanguage: "中文",
+                section1: "第一部分：基本文本",
+                section1Desc: "这是一个测试段落，用于验证语言切换功能。",
+                section2: "第二部分：表单元素",
+                inputLabel: "输入标签：",
+                inputPlaceholder: "在此输入文本...",
+                selectLabel: "选择标签：",
+                option1: "选项 1",
+                option2: "选项 2",
+                option3: "选项 3",
+                section3: "第三部分：按钮",
+                button1: "按钮 1",
+                button2: "按钮 2",
+                debugTitle: "调试信息："
+            }
+        };
+        
+        let currentLanguage = 'en';
+        
+        function updateDebugInfo() {
+            const debugInfo = document.getElementById('debug-info');
+            const dataLangElements = document.querySelectorAll('[data-lang]');
+            const placeholderElements = document.querySelectorAll('[data-lang-placeholder]');
+            
+            debugInfo.innerHTML = `
+                <div>Current Language: ${currentLanguage}</div>
+                <div>Elements with data-lang: ${dataLangElements.length}</div>
+                <div>Elements with data-lang-placeholder: ${placeholderElements.length}</div>
+                <div>Available translations (en): ${Object.keys(translations.en).length}</div>
+                <div>Available translations (zh): ${Object.keys(translations.zh).length}</div>
+            `;
+        }
+        
+        function switchLanguage(lang) {
+            console.log('Switching language to:', lang);
+            currentLanguage = lang;
+            document.getElementById('html-root').lang = lang;
+            document.getElementById('current-language').textContent = translations[lang].currentLanguage;
+            
+            // Update elements with data-lang attribute
+            const dataLangElements = document.querySelectorAll('[data-lang]');
+            console.log('Found data-lang elements:', dataLangElements.length);
+            dataLangElements.forEach(element => {
+                const key = element.getAttribute('data-lang');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                } else {
+                    console.warn('Missing translation for key:', key, 'in language:', lang);
+                }
+            });
+            
+            // Update elements with data-lang-placeholder attribute
+            const placeholderElements = document.querySelectorAll('[data-lang-placeholder]');
+            console.log('Found placeholder elements:', placeholderElements.length);
+            placeholderElements.forEach(element => {
+                const key = element.getAttribute('data-lang-placeholder');
+                if (translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+            
+            // Update select options
+            const optionElements = document.querySelectorAll('select option[data-lang]');
+            console.log('Found option elements:', optionElements.length);
+            optionElements.forEach(option => {
+                const key = option.getAttribute('data-lang');
+                if (translations[lang][key]) {
+                    option.textContent = translations[lang][key];
+                }
+            });
+            
+            updateDebugInfo();
+            console.log('Language switch completed');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing language...');
+            
+            // Add event listener to language toggle
+            document.getElementById('language-toggle').addEventListener('click', () => {
+                const newLang = currentLanguage === 'en' ? 'zh' : 'en';
+                console.log('Language toggle clicked, switching to:', newLang);
+                switchLanguage(newLang);
+            });
+            
+            // Initialize with English
+            switchLanguage('en');
+        });
+    </script>
+</body>
+</html>

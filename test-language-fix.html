@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Fix Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .btn-outline {
+                @apply border border-primary text-primary px-4 py-2 rounded-md hover:bg-primary/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50;
+            }
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold mb-6">Language Selector Test</h1>
+        
+        <!-- Working version -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold mb-2">Working Version:</h3>
+            <div class="relative">
+                <select id="working-select" class="btn-outline appearance-none pr-8 w-full">
+                    <option value="en">English</option>
+                    <option value="zh">中文 (Chinese)</option>
+                    <option value="es">Español (Spanish)</option>
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <i class="fa fa-chevron-down text-gray-500"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Debug info -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="font-semibold mb-2">Debug Info:</h3>
+            <div id="debug-info"></div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                greeting: "Hello!",
+                description: "This is a test page."
+            },
+            zh: {
+                greeting: "你好！",
+                description: "这是一个测试页面。"
+            },
+            es: {
+                greeting: "¡Hola!",
+                description: "Esta es una página de prueba."
+            }
+        };
+        
+        function updateDebugInfo() {
+            const debugInfo = document.getElementById('debug-info');
+            const select = document.getElementById('working-select');
+            
+            debugInfo.innerHTML = `
+                <div>Select element exists: ${!!select}</div>
+                <div>Select value: ${select.value}</div>
+                <div>Select options: ${select.options.length}</div>
+                <div>Selected option: ${select.options[select.selectedIndex].text}</div>
+            `;
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDebugInfo();
+            
+            document.getElementById('working-select').addEventListener('change', (e) => {
+                console.log('Language changed to:', e.target.value);
+                updateDebugInfo();
+            });
+        });
+    </script>
+</body>
+</html>
