@@ -1,10 +1,6 @@
  # 双语数学计算器（HTML/CSS/JS版）
 > 一款轻量级的浏览器端数学计算器，支持中英文语言切换，可完成基础算术运算及常用数学计算。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Compatible Browsers](https://img.shields.io/badge/Browsers-Chrome%20|%20Firefox%20|%20Edge%20|%20Safari-brightgreen.svg)](https://caniuse.com/)
-[![Language: CN/EN](https://img.shields.io/badge/Language-Chinese%20|%20English-blue.svg)](#使用方法)
-
 ## 目录
 - [概述](#概述)
 - [前置条件](#前置条件)
@@ -54,3 +50,57 @@
 
 ## 文件结构
 项目采用简洁易懂的文件结构：
+
+
+1# Bilingual Math Calculator (HTML/CSS/JS Version)
+> A lightweight browser-based math calculator that supports Chinese/English language switching and can perform basic arithmetic operations and common mathematical calculations.
+
+## Table of Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Usage](#usage)
+- [Core Features](#core-features)
+- [File Structure](#file-structure)
+- [Custom Configuration](#custom-configuration)
+- [License](#license)
+- [Contact](#contact)
+
+## Overview
+This tool is a math calculator implemented purely on the front-end (no back-end services required), developed with HTML, CSS, and JavaScript. Designed for quick daily mathematical calculations, it features a user-friendly interface and one-click Chinese/English language switching, making it convenient for bilingual users.
+
+The core of the tool supports basic arithmetic operations and common mathematical functions. It requires no installation and can run directly in any modern browser.
+
+## Prerequisites
+No complex configurations or dependencies! All you need is:
+- A modern web browser (Chrome, Firefox, Edge, Safari, etc.)
+- No internet connection required after saving files locally (runs offline)
+
+## Usage
+### 1. Run the Tool
+- Download all project files (index.html) to your local computer
+- Double-click the `index.html` file to open it directly in your browser
+- Or deploy the files to a web server (e.g., Nginx, Apache) and access via URL
+
+### 2. Switch Languages
+- Locate the "Language Switch" button in the top-right corner of the interface
+- Click the button to switch between the following languages:
+  - 🇨🇳 Chinese (Simplified Chinese)
+  - 🇬🇧 English (American English)
+- All interface text (buttons, labels, prompts) will update instantly
+
+### 3. Perform Calculations
+- Use the on-screen numeric buttons (0-9) and operation buttons (+, -, ×, ÷, =)
+- Click "AC" to clear all input
+- Click "←" to delete the last input character
+- View calculation results in the top display area
+
+## Core Features
+- 🌐 **Bilingual Support**: Seamless switching between Chinese and English interfaces
+- 🧮 **Basic Arithmetic**: Supports addition, subtraction, multiplication, and division
+- 🚀 **Lightweight & Efficient**: Pure front-end implementation (no external libraries/frameworks)
+- 💻 **Offline Usage**: Runs offline after local download
+- 🎨 **Responsive Design**: Adapts to desktops, tablets, mobile phones, and other screen sizes
+- ⚠️ **Error Handling**: Provides friendly prompts for invalid operations (e.g., division by zero)
+
+## File Structure
+The project uses a simple and intuitive file structure:
